@@ -1,0 +1,29 @@
+{% extends "common/page_base.html" %}
+
+{% block title %}
+CS Teams
+{% endblock %}
+
+{% block content %}
+
+    <p class="lead">Place for Your Counter-Strike Team</p>
+
+
+    Features
+
+    <ul>
+      <li>Presentation of your team</li>
+      <li>Medallions of your team members</li>
+      <li>Matche schedule</li>
+    </ul>
+
+
+    Teams
+
+    <ul>
+        {% for team in teams %}
+              <li><a href="{{ base_url }}{{ team.url }}">{{ team.name }}</a></li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

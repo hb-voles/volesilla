@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Hell-Bent VoleS</title>
+
+        <link href="{{ bootstrap_find_resource('simplex/bootstrap.css', cdn='bootswatchcdn') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='css/sticky-footer-navbar.css') }}" rel="stylesheet" >
+
+        {% import "bootstrap/fixes.html" as fixes %}
+        {{fixes.ie8()}}
+
+        {% import "bootstrap/wtf.html" as wtf %}
+    </head>
+
+    <body>
+
+    {{nav.top.render(renderer="bootstrap")}}
+
+    <div class="container">
+
+        <div class="header clearfix">
+            {% block flash_messages %}
+            {%- with messages = get_flashed_messages(with_categories=true) -%}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category=='error' %}
+                            {% set category='danger' %}
+                        {% endif %}
+                        <br />
+                        <div class="alert alert-{{category}}">{{ message|safe }}</div>
+                    {% endfor %}
+                {% endif %}
+            {%- endwith %}
+            {% endblock %}
+        </div>
+
+        <div class="page-header">
+            <h1>{% block title %}{% endblock %}</h1>
+        </div>
+
+        {% block content %}{% endblock %}
+    </div> <!-- /container -->
+
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted">
+                &copy; 2018 VoleS |
+                <a href="https://github.com/hb-voles/volesilla">volesilla</a> |
+                <a href="http://www.bootlint.com/?url=https://voles.celestian.cz">bootlint</a> |
+                c: {{ commit_hash }} | d: {{ deploy_ts }}
+            </p>
+        </div>
+    </footer>
+
+    <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
+    <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrapcdn')}}"></script>
+    </body>
+
+</html>

@@ -1,0 +1,17 @@
+export VIRTUAL_HOST='fqdn host domain'
+export LETSENCRYPT_HOST='fqdn host domain (same as VIRTUAL_HOST)'
+export LETSENCRYPT_EMAIL='web admin's e-mail'
+
+export VLS_BASE_URL='base url'
+
+export VLS_MAIL_USERNAME='username@gmail.com'
+export VLS_MAIL_PASSWORD='app password'
+
+export VLS_RECAPTCHA_PUBLIC_KEY='required a public key>'
+export VLS_RECAPTCHA_PRIVATE_KEY='required a private key'
+
+
+# don't edit those:
+export VLS_SECRET_KEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+export VLS_COMMIT_HASH=`git log -1 --pretty=format:%h`
+export VLS_DEPLOY_TS=`date +%FT%T%Z`
