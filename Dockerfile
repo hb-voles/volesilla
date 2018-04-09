@@ -2,7 +2,7 @@ FROM fedora:27
 MAINTAINER celestian "petr.celestian@gmail.com"
 
 RUN dnf update -y
-RUN dnf install -y python3-tox; dnf clean all
+RUN dnf install -y python3-tox gcc; dnf clean all
 
 COPY . /app
 WORKDIR /app

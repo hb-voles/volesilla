@@ -2,17 +2,25 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% block title %}This is an example page{% endblock %}
 
+{% block styles %}
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+{% endblock styles %}
+
 {% block navbar %}
-<div class="navbar navbar-fixed-top">
-  <!-- ... -->
-</div>
+    <ul>
+        {% for item in nav.top %}
+        <li class="{{ 'active' if item.is_active else '' }}">
+            <a href="{{ item.url }}">{{ item.label }}</a>
+        </li>
+        {% endfor %}
+    </ul>
 {% endblock %}
 
 {% block content %}
   <h1>Hello, Bootstrap</h1>
   Blueprint example page
   
-    <form method="POST" action="/">
+    <form method="POST" action="/world">
         {{ form.csrf_token }}
         {{ form.name.label }} {{ form.name(size=20) }}
         <input type="submit" value="Go">

@@ -3,8 +3,12 @@
 
 # Flask Framework
 Flask==0.12
+flask-bootstrap
+Flask-User==0.6.19
+Flask-Mail
 Flask-Babel
 Flask-BabelEx
 Flask-WTF
-flask-bootstrap
+Flask-Nav
 
+uwsgi

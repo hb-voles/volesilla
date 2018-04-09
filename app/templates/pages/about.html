@@ -1,0 +1,40 @@
+{% extends "bootstrap/base.html" %}
+
+{% import "bootstrap/fixes.html" as fixes %}
+{% block head %}
+  {{super()}}
+  {{fixes.ie8()}}
+{% endblock %}
+
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block scripts %}
+    <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrapcdn')}}"></script>
+    {{super()}}
+{% endblock %}
+
+{% block styles %}
+    <link href="{{bootstrap_find_resource('flatly/bootstrap.css', cdn='bootswatchcdn')}}" rel="stylesheet">
+{% endblock styles %}
+
+
+{% block title %}Hell-Bent VoleS{% endblock %}
+
+{% block navbar %}
+{{nav.top.render(renderer="bootstrap")}}
+{% endblock %}
+
+
+{% block content %}
+
+<div class="row">
+  <div class="col-xs-12 col-md-8"><h1>Hell-Bent VoleS</h1></div>
+  <div class="col-xs-6 col-md-4"></div>
+</div>
+
+<div class="row">
+  <div class="col-xs-12 col-md-8">We are tough players of the game CS:GO. We have a strategy and we are not afraid to use it!</div>
+  <div class="col-xs-6 col-md-4"></div>
+</div>
+
+{% endblock %}
