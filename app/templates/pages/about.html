@@ -1,40 +1,46 @@
-{% extends "bootstrap/base.html" %}
+<!DOCTYPE html>
+<html>
 
-{% import "bootstrap/fixes.html" as fixes %}
-{% block head %}
-  {{super()}}
-  {{fixes.ie8()}}
-{% endblock %}
+    <head>
+        <title>Hell-Bent VoleS</title>
 
-{% import "bootstrap/wtf.html" as wtf %}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-{% block scripts %}
-    <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrapcdn')}}"></script>
-    {{super()}}
-{% endblock %}
+        {% import "bootstrap/fixes.html" as fixes %}
+        {{fixes.ie8()}}
 
-{% block styles %}
-    <link href="{{bootstrap_find_resource('flatly/bootstrap.css', cdn='bootswatchcdn')}}" rel="stylesheet">
-{% endblock styles %}
+        {% import "bootstrap/wtf.html" as wtf %}
 
+        <link href="{{bootstrap_find_resource('flatly/bootstrap.css', cdn='bootswatchcdn')}}" rel="stylesheet">
+    </head>
 
-{% block title %}Hell-Bent VoleS{% endblock %}
+    <body>
+        {{nav.top.render(renderer="bootstrap")}}
 
-{% block navbar %}
-{{nav.top.render(renderer="bootstrap")}}
-{% endblock %}
+        <div class="row">
+          <div class="col-xs-12 col-md-8"><h1>Hell-Bent VoleS</h1></div>
+          <div class="col-xs-6 col-md-4"></div>
+        </div>
 
+        <div class="row">
+          <div class="col-xs-12 col-md-8">We are tough players of the game CS:GO. We have a strategy and we are not afraid to use it!</div>
+          <div class="col-xs-6 col-md-4"></div>
+        </div>
 
-{% block content %}
+        <div id="footer text-center">
+            <p>
+            &copy; Copyright 2018 by VoleS
+            </p><p>
+            <a href="http://www.bootlint.com/?url=https://voles.celestian.cz">bootlint</a>.
+            </p>
+        </div>
 
-<div class="row">
-  <div class="col-xs-12 col-md-8"><h1>Hell-Bent VoleS</h1></div>
-  <div class="col-xs-6 col-md-4"></div>
-</div>
+        <!--
+        <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
+        -->
 
-<div class="row">
-  <div class="col-xs-12 col-md-8">We are tough players of the game CS:GO. We have a strategy and we are not afraid to use it!</div>
-  <div class="col-xs-6 col-md-4"></div>
-</div>
+        <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrapcdn')}}"></script>
+    </body>
 
-{% endblock %}
+</html>
+
