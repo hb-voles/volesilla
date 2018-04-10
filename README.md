@@ -12,6 +12,10 @@ Counter Strike Team Dashboard
 
         deactivate
 
+Deploy
+------
+TBD
+
 Note
 ----
 
