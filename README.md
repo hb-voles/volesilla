@@ -14,7 +14,15 @@ Counter Strike Team Dashboard
 
 Deploy
 ------
-TBD
+
+    git pull
+    export COMMIT_HASH=`git log -1 --pretty=format:%h`
+    sudo docker build -t celestian/volessila_${COMMIT_HASH} .
+
+    sudo docker container stop volesilla-test
+    sudo docker container rm volesilla-test
+
+    sudo docker run -d --name volesilla-test -e VIRTUAL_HOST="voles.celestian.cz" -e LETSENCRYPT_HOST="voles.celestian.cz" -e LETSENCRYPT_EMAIL="petr.celestian@gmail.com" celestian/volessila_${COMMIT_HASH}
 
 Note
 ----
