@@ -15,7 +15,6 @@ from app.exceptions import InvalidUsage
 
 
 from flask_nav import register_renderer
-from app.extensions import JustDivRenderer
 
 
 def create_app(config_object=ProdConfig):
@@ -31,7 +30,6 @@ def create_app(config_object=ProdConfig):
     register_blueprints(app)
     register_errorhandlers(app)
     configure_bootsrap(app)
-    register_renderer(app, 'just_div', JustDivRenderer)
     register_renderer(app, 'bootstrap', BootstrapRenderer)
     return app
 
