@@ -7,7 +7,7 @@ Counter Strike Team Dashboard
         source .tox/py36/bin/activate
 
         export FLASK_APP=autoapp.py
-        export DEBUG=1
+        export FLASK_DEBUG=1
         flask run
 
         deactivate
