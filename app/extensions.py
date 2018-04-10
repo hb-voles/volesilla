@@ -42,29 +42,3 @@ nav.register_element('top', Navbar(
     View('Something', 'about.index'),
     #Link('Seznam.cz', 'https://www.seznam.cz/'),
 ))
-
-
-from dominate import tags
-from flask_nav.renderers import Renderer
-
-class JustDivRenderer(Renderer):
-    # def visit_Navbar(self, node):
-    #     print(">>> A: ", node.items)
-    #     sub = []
-    #     for item in node.items:
-    #         sub.append(self.visit(item))
-    #
-    #     return tags.div('Navigation:', *sub)
-    #
-    # def visit_View(self, node):
-    #     print(">>> B: ", node.text)
-    #     return tags.div('{} ({})'.format(node.text, node.get_url()))
-    #
-    # def visit_Subgroup(self, node):
-    #     print(">>> C: ", node.text)
-    #     # almost the same as visit_Navbar, but written a bit more concise
-    #     return tags.div(node.title,
-    #                     *[self.visit(item) for item in node.items])
-
-    def visit_object(self, node):
-        print('>>> ', node)

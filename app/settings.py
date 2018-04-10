@@ -6,12 +6,16 @@ import os
 class Config(object):
     """Base configuration."""
 
-    SECRET_KEY = os.environ.get('CONDUIT_SECRET', 'secret-key')  # TODO: Change me
+    SECRET_KEY = os.environ.get('VOLESILLA_SECRET', 'secret-key')  # TODO: Change me
     APP_DIR = os.path.abspath(os.path.dirname(__file__))  # This directory
     PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     BOOTSTRAP_SERVE_LOCAL = False
+
+    COMMIT_HASH = os.environ.get('VOLESILLA_COMMIT_HASH', 'commit-hash')
+    COMMIT_TS = os.environ.get('VOLESILLA_COMMIT_TS', 'commit-ts')
+    DEPLOY_TS = os.environ.get('VOLESILLA_DEPLOY_TS', 'deploy-ts')
 
 
 class ProdConfig(Config):

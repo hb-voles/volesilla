@@ -17,6 +17,7 @@ from app.exceptions import InvalidUsage
 from flask_nav import register_renderer
 from app.extensions import JustDivRenderer
 
+
 def create_app(config_object=ProdConfig):
     """An application factory, as explained here:
     http://flask.pocoo.org/docs/patterns/appfactories/.
@@ -60,4 +61,5 @@ def register_errorhandlers(app):
 def configure_bootsrap(app):
     bootstrapcdn = WebCDN("https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/")
     bootswatchcdn = WebCDN("https://stackpath.bootstrapcdn.com/bootswatch/3.3.7/")
-    app.extensions['bootstrap']['cdns'].update({'bootstrapcdn': bootstrapcdn, 'bootswatchcdn': bootswatchcdn})
+    app.extensions['bootstrap']['cdns'].update(
+        {'bootstrapcdn': bootstrapcdn, 'bootswatchcdn': bootswatchcdn})
