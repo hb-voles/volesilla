@@ -3,6 +3,7 @@
 
     <head>
         <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         {% import "bootstrap/fixes.html" as fixes %}
@@ -36,8 +37,11 @@
 
             <footer class="footer">
                 <p>&copy; 2018 VoleS</p>
-                <p>[deploy: {{ deploy_ts }} | commit: {{ commit_hash }} {{commit_ts}}]</p>
-                <p><a href="http://www.bootlint.com/?url=https://voles.celestian.cz">bootlint</a></p>
+                <p>[deploy: {{ deploy_ts }} | commit: {{ commit_hash }} : {{commit_ts}}]</p>
+                <p>
+                    <a href="https://github.com/hb-voles/volesilla">volesilla</a>
+                    <a href="http://www.bootlint.com/?url=https://voles.celestian.cz">bootlint</a>
+                </p>
             </footer>
 
         </div> <!-- /container -->

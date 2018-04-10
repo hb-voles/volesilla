@@ -3,14 +3,14 @@ volesilla
 
 Counter Strike Team Dashboard
 
-        tox -r
-        source .tox/py36/bin/activate
+    tox -r
+    source .tox/py36/bin/activate
 
-        export FLASK_APP=autoapp.py
-        export FLASK_DEBUG=1
-        flask run
+    export FLASK_APP=autoapp.py
+    export FLASK_DEBUG=1
+    flask run
 
-        deactivate
+    deactivate
 
 Deploy
 ------
