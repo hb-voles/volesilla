@@ -39,6 +39,5 @@ db = SQLAlchemy(model_class=CRUDMixin)
 nav = Nav()
 nav.register_element('top', Navbar(
     View('About', 'about.index'),
-    View('Something', 'about.index'),
-    #Link('Seznam.cz', 'https://www.seznam.cz/'),
+    View('Secret', 'secret.index'),
 ))
