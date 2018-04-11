@@ -12,4 +12,4 @@ RUN docker/build.sh
 
 EXPOSE 80
 
-ENTRYPOINT ["docker/entrypoint2.sh"]
+ENTRYPOINT ["docker/entrypoint.sh"]
