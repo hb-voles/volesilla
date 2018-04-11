@@ -10,5 +10,3 @@ Flask-Babel
 Flask-BabelEx
 Flask-WTF
 Flask-Nav
-
-uwsgi
