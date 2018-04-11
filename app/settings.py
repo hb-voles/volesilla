@@ -14,7 +14,6 @@ class Config(object):
     BOOTSTRAP_SERVE_LOCAL = False
 
     COMMIT_HASH = os.environ.get('VOLESILLA_COMMIT_HASH', 'commit-hash')
-    COMMIT_TS = os.environ.get('VOLESILLA_COMMIT_TS', 'commit-ts')
     DEPLOY_TS = os.environ.get('VOLESILLA_DEPLOY_TS', 'deploy-ts')
 
 

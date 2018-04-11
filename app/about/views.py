@@ -12,11 +12,9 @@ blueprint = Blueprint('about', __name__, template_folder='templates')
 def index():
 
     commit_hash = app.config['COMMIT_HASH']
-    commit_ts = app.config['COMMIT_TS']
     deploy_ts = app.config['DEPLOY_TS']
 
     return render_template(
         'pages/about.html',
         commit_hash=commit_hash,
-        commit_ts=commit_ts,
         deploy_ts=deploy_ts)
