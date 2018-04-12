@@ -23,6 +23,7 @@ Deploy
     sudo docker container rm volesilla-test
 
     sudo docker run -d --name volesilla-test -e VIRTUAL_HOST="voles.celestian.cz" -e LETSENCRYPT_HOST="voles.celestian.cz" -e LETSENCRYPT_EMAIL="petr.celestian@gmail.com" celestian/volessila_${COMMIT_HASH}
+    sudo docker container list
 
 Note
 ----
