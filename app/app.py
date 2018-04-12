@@ -1,24 +1,17 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
 from flask import Flask
-
-from flask_bootstrap.nav import BootstrapRenderer
-
-from app.extensions import db, nav
-
-from flask_bootstrap import Bootstrap
+from flask_user import UserManager
 from flask_bootstrap import WebCDN
+from flask_bootstrap.nav import BootstrapRenderer
+from flask_nav import register_renderer
 
-from flask_user import UserManager, SQLAlchemyAdapter
-
-from app import about
-from app import secret
+from app.extensions import db, db_adapter, bootstrap, nav
 from app.settings import ProdConfig
 from app.exceptions import InvalidUsage
 
-from app.user import User
-
-from flask_nav import register_renderer
+from app import about
+from app import secret
 
 
 def create_app(config_object=ProdConfig):
@@ -33,8 +26,6 @@ def create_app(config_object=ProdConfig):
     register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
-    configure_bootsrap(app)
-    configure_flask_user(app)
     register_renderer(app, 'bootstrap', BootstrapRenderer)
     return app
 
@@ -42,7 +33,15 @@ def create_app(config_object=ProdConfig):
 def register_extensions(app):
     """Register Flask extensions."""
     db.init_app(app)
-    bootstrap = Bootstrap(app)
+
+    user_manager = UserManager(db_adapter, app)     # Initialize Flask-User
+
+    bootstrap.init_app(app)
+    bootstrapcdn = WebCDN("https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/")
+    bootswatchcdn = WebCDN("https://stackpath.bootstrapcdn.com/bootswatch/3.3.7/")
+    app.extensions['bootstrap']['cdns'].update(
+        {'bootstrapcdn': bootstrapcdn, 'bootswatchcdn': bootswatchcdn})
+
     nav.init_app(app)
 
 
@@ -60,15 +59,3 @@ def register_errorhandlers(app):
         return response
 
     app.errorhandler(InvalidUsage)(errorhandler)
-
-
-def configure_bootsrap(app):
-    bootstrapcdn = WebCDN("https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/")
-    bootswatchcdn = WebCDN("https://stackpath.bootstrapcdn.com/bootswatch/3.3.7/")
-    app.extensions['bootstrap']['cdns'].update(
-        {'bootstrapcdn': bootstrapcdn, 'bootswatchcdn': bootswatchcdn})
-
-
-def configure_flask_user(app):
-    db_adapter = SQLAlchemyAdapter(db, User)        # Register the User model
-    user_manager = UserManager(db_adapter, app)     # Initialize Flask-User
