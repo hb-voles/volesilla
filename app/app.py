@@ -3,7 +3,7 @@
 from flask import Flask
 from flask_user import UserManager
 from flask_bootstrap import WebCDN
-from flask_bootstrap.nav import BootstrapRenderer
+from app.nav import BootstrapRenderer
 from flask_nav import register_renderer
 
 from app.extensions import db, db_adapter, bootstrap, nav
