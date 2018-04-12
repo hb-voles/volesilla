@@ -3,7 +3,7 @@ from dominate import tags
 from visitor import Visitor
 
 
-class BootstrapRenderer(Visitor):
+class MyBootstrapRenderer(Visitor):
     def __init__(self, html5=True, id=None):
         self.html5 = html5
         self._in_dropdown = False
@@ -15,9 +15,9 @@ class BootstrapRenderer(Visitor):
         node_id = self.id or sha1(str(id(node)).encode()).hexdigest()
 
         root = tags.nav() if self.html5 else tags.div(role='navigation')
-        root['class'] = 'navbar navbar-default'
+        root['class'] = 'navbar navbar-default navbar-fixed-top'
 
-        cont = root.add(tags.div(_class='container-fluid'))
+        cont = root.add(tags.div(_class='container'))
 
         # collapse button
         header = cont.add(tags.div(_class='navbar-header'))

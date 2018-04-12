@@ -2,12 +2,9 @@
 """Extensions module. Each extension is initialized in the app factory located in app.py."""
 
 from flask_sqlalchemy import SQLAlchemy, Model
-from flask_user import UserMixin
+from flask_user import UserMixin, SQLAlchemyAdapter
 from flask_bootstrap import Bootstrap
 from flask_nav import Nav
-from flask_nav.elements import *
-
-from flask_user import SQLAlchemyAdapter
 
 
 class CRUDMixin(Model):
@@ -65,7 +62,3 @@ db_adapter = SQLAlchemyAdapter(db, User)  # Register the User model
 bootstrap = Bootstrap()
 
 nav = Nav()
-nav.register_element('top', Navbar(
-    View('About', 'about.index'),
-    View('Secret', 'secret.index'),
-))

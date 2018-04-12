@@ -3,8 +3,11 @@
 from flask import Flask
 from flask_user import UserManager
 from flask_bootstrap import WebCDN
-from app.nav import BootstrapRenderer
 from flask_nav import register_renderer
+from flask_nav.elements import *
+
+from flask_bootstrap.nav import BootstrapRenderer
+from app.nav import MyBootstrapRenderer
 
 from app.extensions import db, db_adapter, bootstrap, nav
 from app.settings import ProdConfig
@@ -26,7 +29,7 @@ def create_app(config_object=ProdConfig):
     register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
-    register_renderer(app, 'bootstrap', BootstrapRenderer)
+    register_renderer(app, 'bootstrap', MyBootstrapRenderer)
     return app
 
 
@@ -43,6 +46,11 @@ def register_extensions(app):
         {'bootstrapcdn': bootstrapcdn, 'bootswatchcdn': bootswatchcdn})
 
     nav.init_app(app)
+    nav.register_element('top', Navbar(
+        Link('Hell-Bent VoleS', app.config['HOME_URL']),
+        View('About', 'about.index'),
+        View('Secret', 'secret.index'),
+        ))
 
 
 def register_blueprints(app):
