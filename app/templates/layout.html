@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Hell-Bent VoleS</title>
+
+        <link href="{{bootstrap_find_resource('flatly/bootstrap.css', cdn='bootswatchcdn')}}" rel="stylesheet">
+
+        {% import "bootstrap/fixes.html" as fixes %}
+        {{fixes.ie8()}}
+
+        {% import "bootstrap/wtf.html" as wtf %}
+    </head>
+
+    <body>
+    <div class="container">
+        <div class="header clearfix">
+
+            {{nav.top.render(renderer="bootstrap")}}
+
+            {% block flash_messages %}
+            {%- with messages = get_flashed_messages(with_categories=true) -%}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category=='error' %}
+                            {% set category='danger' %}
+                        {% endif %}
+                        <div class="alert alert-{{category}}">{{ message|safe }}</div>
+                    {% endfor %}
+                {% endif %}
+            {%- endwith %}
+            {% endblock %}
+
+            <h3 class="text-muted">Hell-Bent VoleS</h3>
+        </div>
+
+        {% block content %}{% endblock %}
+
+        <br/>
+
+        <footer class="footer">
+            <div class="pull-left">&copy; 2018 VoleS</div>
+            <div class="pull-right">
+                <p>
+                    <a href="https://github.com/hb-voles/volesilla">volesilla</a>
+                    <a href="http://www.bootlint.com/?url=https://voles.celestian.cz">bootlint</a>
+                </p>
+                <p>c: {{ commit_hash }} | d: {{ deploy_ts }}</p>
+            </div>
+        </footer>
+
+    </div> <!-- /container -->
+
+    <script src="{{bootstrap_find_resource('jquery.js', cdn='jquery')}}"></script>
+    <script src="{{bootstrap_find_resource('js/bootstrap.js', cdn='bootstrapcdn')}}"></script>
+    </body>
+
+</html>
