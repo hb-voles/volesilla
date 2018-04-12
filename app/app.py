@@ -6,12 +6,10 @@ from flask_bootstrap import WebCDN
 from flask_nav import register_renderer
 from flask_nav.elements import *
 
-from flask_bootstrap.nav import BootstrapRenderer
-from app.nav import MyBootstrapRenderer
-
 from app.extensions import db, db_adapter, bootstrap, nav
 from app.settings import ProdConfig
 from app.exceptions import InvalidUsage
+from app.nav import MyBootstrapRenderer
 
 from app import about
 from app import secret
@@ -50,7 +48,7 @@ def register_extensions(app):
         Link('Hell-Bent VoleS', app.config['HOME_URL']),
         View('About', 'about.index'),
         View('Secret', 'secret.index'),
-        ))
+    ))
 
 
 def register_blueprints(app):
