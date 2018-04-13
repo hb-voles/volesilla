@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-tox -r
+tox -re py36

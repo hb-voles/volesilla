@@ -2,7 +2,6 @@
 """User views."""
 from flask import current_app as app
 from flask import Blueprint, render_template
-from jinja2 import TemplateNotFound
 
 blueprint = Blueprint('about', __name__, template_folder='templates')
 

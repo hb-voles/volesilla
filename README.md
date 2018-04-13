@@ -3,6 +3,9 @@ volesilla
 
 Counter Strike Team Dashboard
 
+Development
+-----------
+
     tox -r
     source .tox/py36/bin/activate
 

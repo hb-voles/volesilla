@@ -4,7 +4,7 @@ from flask import Flask
 from flask_user import UserManager
 from flask_bootstrap import WebCDN
 from flask_nav import register_renderer
-from flask_nav.elements import *
+from flask_nav.elements import Navbar, Link, View
 
 from app.extensions import db, db_adapter, bootstrap, nav
 from app.settings import ProdConfig

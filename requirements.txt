@@ -12,3 +12,5 @@ Flask-WTF
 Flask-Nav
 
 uwsgi
+
+pylint
