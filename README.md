@@ -62,7 +62,7 @@ See:
 
     sudo docker run \
         -d --name volesilla-test \
-        -v /srv/volesilla/data:/app/data
+        -v /srv/volesilla/data:/app/data \
         -e VIRTUAL_HOST=${VOLES_HOST} \
         -e LETSENCRYPT_HOST=${VOLES_LETSENCRYPT_HOST} \
         -e LETSENCRYPT_EMAIL=${VOLES_LETSENCRYPT_EMAIL} \
