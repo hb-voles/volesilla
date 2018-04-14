@@ -54,8 +54,8 @@ def register_extensions(app):
 
 def register_blueprints(app):
     """Register Flask blueprints."""
-    app.register_blueprint(about.views.blueprint)
-    app.register_blueprint(secret.views.blueprint)
+    app.register_blueprint(about.views.BLUEPRINT)
+    app.register_blueprint(secret.views.BLUEPRINT)
 
 
 def register_errorhandlers(app):
