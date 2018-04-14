@@ -11,6 +11,8 @@
         <link href="{{ bootstrap_find_resource('flatly/bootstrap.css', cdn='bootswatchcdn') }}" rel="stylesheet">
         <link href="{{ url_for('static', filename='css/sticky-footer-navbar.css') }}" rel="stylesheet" >
 
+        <script src='https://www.google.com/recaptcha/api.js'></script>
+
         {% import "bootstrap/fixes.html" as fixes %}
         {{fixes.ie8()}}
 

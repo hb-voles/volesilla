@@ -9,6 +9,8 @@ Development
     tox -r
     source .tox/py36/bin/activate
 
+    source .deploy_env.sh
+
     python volesilla_utils.py db_init volesilla_dev.db
 
     export FLASK_APP=volesilla.py

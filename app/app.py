@@ -6,8 +6,11 @@ from flask_bootstrap import WebCDN
 from flask_nav import register_renderer
 from flask_nav.elements import Navbar, Link, View
 
+from flask_wtf import RecaptchaField
+from flask_user.forms import LoginForm
+
 from app.settings import ProdConfig
-from app.extensions import db, db_adapter, bootstrap, nav
+from app.extensions import db, db_adapter, mail, bootstrap, nav
 from app.exceptions import InvalidUsage
 from app.nav import MyBootstrapRenderer
 
@@ -36,7 +39,9 @@ def register_extensions(app):
 
     db.init_app(app)
 
-    user_manager = UserManager(db_adapter, app)     # Initialize Flask-User
+    user_manager = UserManager(db_adapter, app, register_form=MyLoginForm)
+
+    mail.init_app(app)
 
     bootstrap.init_app(app)
     bootstrapcdn = WebCDN("https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/")
@@ -49,6 +54,7 @@ def register_extensions(app):
         Link('Hell-Bent VoleS', app.config['HOME_URL']),
         View('About', 'about.index'),
         View('Secret', 'secret.index'),
+        View('Sign Out', 'user.logout'),
     ))
 
 
@@ -66,3 +72,7 @@ def register_errorhandlers(app):
         return response
 
     app.errorhandler(InvalidUsage)(errorhandler)
+
+
+class MyLoginForm(LoginForm):
+    recaptcha = RecaptchaField()

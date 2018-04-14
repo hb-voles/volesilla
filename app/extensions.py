@@ -3,41 +3,12 @@
 
 from flask_sqlalchemy import SQLAlchemy, Model
 from flask_user import UserMixin, SQLAlchemyAdapter
+from flask_mail import Mail
 from flask_bootstrap import Bootstrap
 from flask_nav import Nav
 
 
-class CRUDMixin(Model):
-    """Mixin that adds convenience methods for CRUD (create, read, update, delete) operations."""
-
-    @classmethod
-    def create(cls, **kwargs):
-        """Create a new record and save it the database."""
-        instance = cls(**kwargs)
-        return instance.save()
-
-    def update(self, commit=True, **kwargs):
-        """Update specific fields of a record."""
-        for attr, value in kwargs.items():
-            setattr(self, attr, value)
-        return self.save() if commit else self
-
-    def save(self, commit=True):
-        """Save the record."""
-        db.session.add(self)
-        if commit:
-            db.session.commit()
-        return self
-
-    def delete(self, commit=True):
-        """Remove the record from the database."""
-        db.session.delete(self)
-        return commit and db.session.commit()
-
-
-db = SQLAlchemy(model_class=CRUDMixin)
-
-# Define the User data model. Make sure to add flask_user UserMixin !!!
+db = SQLAlchemy()
 
 
 class User(db.Model, UserMixin):
@@ -58,8 +29,7 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(100), nullable=False, server_default='')
 
 
-db_adapter = SQLAlchemyAdapter(db, User)  # Register the User model
-
+db_adapter = SQLAlchemyAdapter(db, User)
+mail = Mail()
 bootstrap = Bootstrap()
-
 nav = Nav()

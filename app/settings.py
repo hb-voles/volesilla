@@ -13,6 +13,22 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     BOOTSTRAP_SERVE_LOCAL = False
 
+    MAIL_SERVER = 'smtp.gmail.com'
+    MAIL_PORT = 465
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = os.environ.get('VOLES_MAIL_USERNAME', '')
+    MAIL_PASSWORD = os.environ.get('VOLES_MAIL_PASSWORD', '')
+
+    MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER',
+                                    '"VoleS" <noreply@gmail.com>')
+
+    USER_APP_NAME = 'VoleS'
+
+    RECAPTCHA_PUBLIC_KEY = os.environ.get('VOLES_RECAPTCHA_PUBLIC_KEY', '')
+    RECAPTCHA_PRIVATE_KEY = os.environ.get('VOLES_RECAPTCHA_PRIVATE_KEY', '')
+
+    RECAPTCHA_API_SERVER = 'https://www.google.com/recaptcha/api/siteverify'
+
     COMMIT_HASH = os.environ.get('VOLESILLA_COMMIT_HASH', 'commit-hash')
     DEPLOY_TS = os.environ.get('VOLESILLA_DEPLOY_TS', 'deploy-ts')
 
