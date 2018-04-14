@@ -37,8 +37,9 @@ class CRUDMixin(Model):
 
 db = SQLAlchemy(model_class=CRUDMixin)
 
-
 # Define the User data model. Make sure to add flask_user UserMixin !!!
+
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
 

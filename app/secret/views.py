@@ -6,10 +6,10 @@ from flask import Blueprint, render_template
 from flask_user import login_required
 
 
-blueprint = Blueprint('secret', __name__, template_folder='templates')
+BLUEPRINT = Blueprint('secret', __name__, template_folder='templates')
 
 
-@blueprint.route('/secret')
+@BLUEPRINT.route('/secret')
 @login_required
 def index():
 

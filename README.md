@@ -9,8 +9,11 @@ Development
     tox -r
     source .tox/py36/bin/activate
 
-    export FLASK_APP=autoapp.py
+    python volesilla_utils.py db_init volesilla_dev.db
+
+    export FLASK_APP=volesilla.py
     export FLASK_DEBUG=1
+
     flask run
 
     deactivate

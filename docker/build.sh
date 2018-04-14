@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 tox -re py36
-mkdir data
+python volesilla_utils.py db_init volesilla.db

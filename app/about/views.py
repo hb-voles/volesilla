@@ -3,10 +3,10 @@
 from flask import current_app as app
 from flask import Blueprint, render_template
 
-blueprint = Blueprint('about', __name__, template_folder='templates')
+BLUEPRINT = Blueprint('about', __name__, template_folder='templates')
 
 
-@blueprint.route('/')
+@BLUEPRINT.route('/')
 def index():
 
     commit_hash = app.config['COMMIT_HASH']

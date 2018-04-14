@@ -24,4 +24,6 @@ done
 
 autopep8 --max-line-length=100 -i -aaa -r ${SOURCE_PATH}/app/
 
-autopep8 --max-line-length=100 -i -aaa ${SOURCE_PATH}/autoapp.py
+autopep8 --max-line-length=100 -i -aaa ${SOURCE_PATH}/setup.py
+autopep8 --max-line-length=100 -i -aaa ${SOURCE_PATH}/volesilla.py
+autopep8 --max-line-length=100 -i -aaa ${SOURCE_PATH}/volesilla_utils.py

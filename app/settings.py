@@ -20,26 +20,26 @@ class Config(object):
 class ProdConfig(Config):
     """Production configuration."""
 
-    ENV = 'prod'
+    ENV = 'production_env'
     DEBUG = False
     BOOTSTRAP_USE_MINIFIED = True
-    DB_NAME = 'app_prod.db'
     HOME_URL = 'https://voles.celestian.cz/'
 
     # Put the db file in project root
-    DB_PATH = os.path.join(Config.PROJECT_ROOT, DB_NAME)
+    DB_NAME = 'volesilla.db'
+    DB_PATH = os.path.join(Config.PROJECT_ROOT, 'data', DB_NAME)
     SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_PATH)
 
 
 class DevConfig(Config):
     """Development configuration."""
 
-    ENV = 'dev'
+    ENV = 'development_env'
     DEBUG = True
     BOOTSTRAP_USE_MINIFIED = False
-    DB_NAME = 'app_dev.db'
     HOME_URL = 'http://127.0.0.1:5000/'
 
     # Put the db file in project root
-    DB_PATH = os.path.join(Config.PROJECT_ROOT, DB_NAME)
+    DB_NAME = 'volesilla_dev.db'
+    DB_PATH = os.path.join(Config.PROJECT_ROOT, 'data', DB_NAME)
     SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_PATH)
