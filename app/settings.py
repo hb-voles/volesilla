@@ -27,7 +27,8 @@ class Config(object):
     RECAPTCHA_PUBLIC_KEY = os.environ.get('VOLES_RECAPTCHA_PUBLIC_KEY', '')
     RECAPTCHA_PRIVATE_KEY = os.environ.get('VOLES_RECAPTCHA_PRIVATE_KEY', '')
 
-    RECAPTCHA_API_SERVER = 'https://www.google.com/recaptcha/api/siteverify'
+    # RECAPTCHA_API_SERVER = 'https://www.google.com/recaptcha/api/siteverify'
+    # RECAPTCHA_USE_SSL = False
 
     COMMIT_HASH = os.environ.get('VOLESILLA_COMMIT_HASH', 'commit-hash')
     DEPLOY_TS = os.environ.get('VOLESILLA_DEPLOY_TS', 'deploy-ts')

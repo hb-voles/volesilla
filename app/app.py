@@ -7,7 +7,7 @@ from flask_nav import register_renderer
 from flask_nav.elements import Navbar, Link, View
 
 from flask_wtf import RecaptchaField
-from flask_user.forms import LoginForm
+from flask_user.forms import LoginForm, RegisterForm
 
 from app.settings import ProdConfig
 from app.extensions import db, db_adapter, mail, bootstrap, nav
@@ -34,12 +34,24 @@ def create_app(config_object=ProdConfig):
     return app
 
 
+class MyRegisterForm(RegisterForm):
+    recaptcha = RecaptchaField()
+
+
+class MyLoginForm(LoginForm):
+    recaptcha = RecaptchaField()
+
+
 def register_extensions(app):
     """Register Flask extensions."""
 
     db.init_app(app)
 
-    user_manager = UserManager(db_adapter, app, register_form=MyLoginForm)
+    user_manager = UserManager(
+        db_adapter,
+        app,
+        login_form=MyLoginForm,
+        register_form=MyRegisterForm)
 
     mail.init_app(app)
 
@@ -72,7 +84,3 @@ def register_errorhandlers(app):
         return response
 
     app.errorhandler(InvalidUsage)(errorhandler)
-
-
-class MyLoginForm(LoginForm):
-    recaptcha = RecaptchaField()
