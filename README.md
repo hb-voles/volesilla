@@ -6,7 +6,7 @@ Counter Strike Team Dashboard
 Development
 -----------
 
-    tox -r
+    tox -re py36
     source .tox/py36/bin/activate
 
     source .deploy_env.sh
