@@ -30,8 +30,8 @@ class Config(object):
     # RECAPTCHA_API_SERVER = 'https://www.google.com/recaptcha/api/siteverify'
     # RECAPTCHA_USE_SSL = False
 
-    COMMIT_HASH = os.environ.get('VOLESILLA_COMMIT_HASH', 'commit-hash')
-    DEPLOY_TS = os.environ.get('VOLESILLA_DEPLOY_TS', 'deploy-ts')
+    COMMIT_HASH = os.environ.get('VOLES_COMMIT_HASH', 'commit-hash')
+    DEPLOY_TS = os.environ.get('VOLES_DEPLOY_TS', 'deploy-ts')
 
 
 class ProdConfig(Config):

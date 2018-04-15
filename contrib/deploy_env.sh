@@ -11,3 +11,4 @@ export VOLES_RECAPTCHA_PUBLIC_KEY="<required a public key>"
 export VOLES_RECAPTCHA_PRIVATE_KEY="required a private key"
 
 export VOLES_COMMIT_HASH=`git log -1 --pretty=format:%h`
+export VOLES_DEPLOY_TS=`date +%FT%T%Z`
