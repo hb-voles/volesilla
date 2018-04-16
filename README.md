@@ -6,15 +6,17 @@ Counter Strike Team Dashboard
 Development
 -----------
 
+    # Edit volesilla deploy environemt
+    cp contrib/env .env
+    vim .env
+
     tox -re py36
     source .tox/py36/bin/activate
-
-    source .deploy_env.sh
+    source .env
+    export FLASK_DEBUG=1
+    export FLASK_APP=volesilla.py
 
     python volesilla_utils.py db_init volesilla_dev.db
-
-    export FLASK_APP=volesilla.py
-    export FLASK_DEBUG=1
 
     flask run
 
@@ -26,8 +28,8 @@ Deploy
 ### Pre-deploy
 
     # Edit volesilla deploy environemt
-    cp contrib/.deploy_env.sh .deploy_env.sh
-    vim .deploy_env.sh
+    cp contrib/env .env
+    vim .env
 
     mkdir -p /srv/nginx-proxy/certs
     mkdir -p /srv/volesilla/data
@@ -58,9 +60,9 @@ See:
 
     git pull
 
-    source .deploy_env.sh
+    source .env
 
-    sudo docker build -t celestian/volessila_${VOLES_COMMIT_HASH} .
+    sudo docker build -t celestian/volessila_${COPED_COMMIT_HASH} .
 
     sudo docker container stop volesilla-test
     sudo docker container rm volesilla-test
@@ -68,10 +70,17 @@ See:
     sudo docker run \
         -d --name volesilla-test \
         -v /srv/volesilla/data:/app/data \
-        -e VIRTUAL_HOST=${VOLES_HOST} \
-        -e LETSENCRYPT_HOST=${VOLES_LETSENCRYPT_HOST} \
-        -e LETSENCRYPT_EMAIL=${VOLES_LETSENCRYPT_EMAIL} \
-        celestian/volessila_${VOLES_COMMIT_HASH}
+        -e VIRTUAL_HOST=${COPED_HOST} \
+        -e COPED_HOST=${COPED_HOST} \
+        -e COPED_LETSENCRYPT_HOST=${COPED_LETSENCRYPT_HOST} \
+        -e COPED_LETSENCRYPT_EMAIL=${COPED_LETSENCRYPT_EMAIL} \
+        -e COPED_MAIL_USERNAME=${COPED_MAIL_USERNAME} \
+        -e COPED_MAIL_PASSWORD=${COPED_MAIL_PASSWORD} \
+        -e COPED_RECAPTCHA_PUBLIC_KEY=${COPED_RECAPTCHA_PUBLIC_KEY} \
+        -e COPED_RECAPTCHA_PRIVATE_KEY=${COPED_RECAPTCHA_PRIVATE_KEY} \
+        -e COPED_COMMIT_HASH=${COPED_COMMIT_HASH} \
+        -e COPED_DEPLOY_TS=${COPED_DEPLOY_TS} \
+        celestian/volessila_${COPED_COMMIT_HASH}
 
     sudo docker container list
 

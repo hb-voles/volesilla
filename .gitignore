@@ -103,8 +103,5 @@ ENV/
 # volesilla's data directory
 data
 
-# volessila's deploy environment
-.deploy_env.sh
-
 # by celestian
 *~

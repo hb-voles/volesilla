@@ -16,21 +16,21 @@ class Config(object):
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
     MAIL_USE_SSL = True
-    MAIL_USERNAME = os.environ.get('VOLES_MAIL_USERNAME', '')
-    MAIL_PASSWORD = os.environ.get('VOLES_MAIL_PASSWORD', '')
+    MAIL_USERNAME = os.environ.get('COPED_MAIL_USERNAME', '')
+    MAIL_PASSWORD = os.environ.get('COPED_MAIL_PASSWORD', '')
 
-    MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER',
+    MAIL_DEFAULT_SENDER = os.getenv('COPED_DEFAULT_SENDER',
                                     '"VoleS" <noreply@gmail.com>')
 
-    USER_APP_NAME = 'VoleS'
+    USER_APP_NAME = 'CS:GO Team Dashboard'  # TODO
 
-    RECAPTCHA_PUBLIC_KEY = os.environ.get('VOLES_RECAPTCHA_PUBLIC_KEY', '')
-    RECAPTCHA_PRIVATE_KEY = os.environ.get('VOLES_RECAPTCHA_PRIVATE_KEY', '')
+    RECAPTCHA_PUBLIC_KEY = os.environ.get('COPED_RECAPTCHA_PUBLIC_KEY', '')
+    RECAPTCHA_PRIVATE_KEY = os.environ.get('COPED_RECAPTCHA_PRIVATE_KEY', '')
 
     # RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
 
-    COMMIT_HASH = os.environ.get('VOLES_COMMIT_HASH', 'commit-hash')
-    DEPLOY_TS = os.environ.get('VOLES_DEPLOY_TS', 'deploy-ts')
+    COMMIT_HASH = os.environ.get('COPED_COMMIT_HASH', 'commit-hash')
+    DEPLOY_TS = os.environ.get('COPED_DEPLOY_TS', 'deploy-ts')
 
 
 class ProdConfig(Config):
@@ -39,7 +39,7 @@ class ProdConfig(Config):
     ENV = 'production_env'
     DEBUG = False
     BOOTSTRAP_USE_MINIFIED = True
-    HOME_URL = 'https://voles.celestian.cz/'
+    HOME_URL = 'https://voles.celestian.cz/'  # TODO
 
     # Put the db file in project root
     DB_NAME = 'volesilla.db'
@@ -53,7 +53,7 @@ class DevConfig(Config):
     ENV = 'development_env'
     DEBUG = True
     BOOTSTRAP_USE_MINIFIED = False
-    HOME_URL = 'http://127.0.0.1:5000/'
+    HOME_URL = 'http://127.0.0.1:5000/'  # TODO
 
     # Put the db file in project root
     DB_NAME = 'volesilla_dev.db'
