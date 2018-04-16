@@ -35,7 +35,7 @@ Deploy
     mkdir -p /srv/volesilla/data
 
     # nginx proxy in container
-    docker run \
+    sudo docker run \
         -d -p 80:80 -p 443:443 \
         --name nginx-proxy \
         -v /srv/nginx-proxy/certs:/etc/nginx/certs:ro \
@@ -45,7 +45,7 @@ Deploy
         --label com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy jwilder/nginx-proxy
 
     # lets encrypt nginx proxy companion
-    docker run \
+    sudo docker run \
         -d  --name le-companion \
         -v /srv/nginx-proxy/certs:/etc/nginx/certs:rw \
         -v /var/run/docker.sock:/var/run/docker.sock:ro \
@@ -71,9 +71,9 @@ See:
         -d --name volesilla-test \
         -v /srv/volesilla/data:/app/data \
         -e VIRTUAL_HOST=${COPED_HOST} \
+        -e LETSENCRYPT_HOST=${COPED_LETSENCRYPT_HOST} \
+        -e LETSENCRYPT_EMAIL=${COPED_LETSENCRYPT_EMAIL} \
         -e COPED_HOST=${COPED_HOST} \
-        -e COPED_LETSENCRYPT_HOST=${COPED_LETSENCRYPT_HOST} \
-        -e COPED_LETSENCRYPT_EMAIL=${COPED_LETSENCRYPT_EMAIL} \
         -e COPED_MAIL_USERNAME=${COPED_MAIL_USERNAME} \
         -e COPED_MAIL_PASSWORD=${COPED_MAIL_PASSWORD} \
         -e COPED_RECAPTCHA_PUBLIC_KEY=${COPED_RECAPTCHA_PUBLIC_KEY} \
@@ -84,9 +84,15 @@ See:
 
     sudo docker container list
 
+
 ### Docker debbug
 
     sudo docker exec -ti <image> /usr/bin/bash
+
+    # Locally on server if you need work with le-companion:
+    sudo docker exec le-companion /app/cert_status
+    sudo docker exec le-companion /app/force_renew
+
 
 Note
 ----

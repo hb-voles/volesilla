@@ -1,6 +1,6 @@
-export COPED_HOST='fqdn host domain'
-export COPED_LETSENCRYPT_HOST='fqdn host domain (same as COPED_HOST)'
-export COPED_LETSENCRYPT_EMAIL='web admin's e-mail'
+export VIRTUAL_HOST='fqdn host domain'
+export LETSENCRYPT_HOST='fqdn host domain (same as COPED_HOST)'
+export LETSENCRYPT_EMAIL='web admin's e-mail'
 
 export COPED_MAIL_USERNAME='username@gmail.com'
 export COPED_MAIL_PASSWORD='app password'
