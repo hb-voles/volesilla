@@ -16,7 +16,7 @@ from flask.helpers import get_debug_flag
 
 from app.app import create_app
 from app.settings import DevConfig, ProdConfig
-from app.extensions import db, db_adapter, Internals
+from app.extensions import db, db_adapter, Internal
 
 
 def main():
@@ -42,7 +42,7 @@ def main():
 
         with app.app_context():
             db.init_app(app)
-            db_version_from_file = db_adapter.get_object(Internals, 1).db_version
+            db_version_from_file = db_adapter.get_object(Internal, 1).db_version
 
         if db_version_from_conf == db_version_from_file:
             print(
@@ -77,7 +77,7 @@ def main():
             db.init_app(app)
             db.create_all()
 
-            internal = Internals(db_version=CONFIG.DB_VERSION)
+            internal = Internal(db_version=CONFIG.DB_VERSION)
 
             db.session.add(internal)
             db.session.commit()

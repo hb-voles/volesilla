@@ -30,13 +30,20 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(100), nullable=False, server_default='')
 
 
-class Internals(db.Model):
+class Internal(db.Model):
     '''Table for internal data'''
     id = db.Column(db.Integer, primary_key=True)  # pylint: disable=invalid-name
     db_version = db.Column(db.Integer)
 
 
-db_adapter = SQLAlchemyAdapter(db, User, Internals)  # pylint: disable=invalid-name
+class Team(db.Model):
+    '''Teams table'''
+    id = db.Column(db.Integer, primary_key=True)  # pylint: disable=invalid-name
+    team_name = db.Column(db.String(50), nullable=False)
+    url = db.Column(db.String(50), nullable=False)
+
+
+db_adapter = SQLAlchemyAdapter(db, User, Internal, Team)  # pylint: disable=invalid-name
 mail = Mail()  # pylint: disable=invalid-name
 bootstrap = Bootstrap()  # pylint: disable=invalid-name
 nav = Nav()  # pylint: disable=invalid-name

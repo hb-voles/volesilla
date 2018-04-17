@@ -6,7 +6,7 @@ import os
 class Config(object):
     """Base configuration."""
 
-    DB_VERSION = 1
+    DB_VERSION = 2
 
     SECRET_KEY = os.environ.get('COPED_SECRET_KEY', '')
     APP_DIR = os.path.abspath(os.path.dirname(__file__))  # This directory
