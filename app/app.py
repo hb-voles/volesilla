@@ -6,13 +6,12 @@ from flask_bootstrap import WebCDN
 from flask_nav import register_renderer
 from flask_nav.elements import Navbar, Link, View
 
-from flask_wtf import RecaptchaField
-from flask_user.forms import RegisterForm, LoginForm, ForgotPasswordForm, ResetPasswordForm, ChangePasswordForm
-
 from app.settings import ProdConfig
 from app.extensions import db, db_adapter, mail, bootstrap, nav
 from app.exceptions import InvalidUsage
 from app.nav import MyBootstrapRenderer
+from app.user_form import MyRegisterForm, MyLoginForm, MyForgotPasswordForm, \
+    MyResetPasswordForm, MyChangePasswordForm
 
 from app import about
 from app import secret
@@ -34,32 +33,12 @@ def create_app(config_object=ProdConfig):
     return app
 
 
-class MyRegisterForm(RegisterForm):
-    recaptcha = RecaptchaField()
-
-
-class MyLoginForm(LoginForm):
-    recaptcha = RecaptchaField()
-
-
-class MyForgotPasswordForm(ForgotPasswordForm):
-    recaptcha = RecaptchaField()
-
-
-class MyResetPasswordForm(ResetPasswordForm):
-    recaptcha = RecaptchaField()
-
-
-class MyChangePasswordForm(ChangePasswordForm):
-    recaptcha = RecaptchaField()
-
-
 def register_extensions(app):
     """Register Flask extensions."""
 
     db.init_app(app)
 
-    user_manager = UserManager(
+    UserManager(
         db_adapter,
         app,
         login_form=MyLoginForm,
@@ -93,8 +72,10 @@ def register_blueprints(app):
 
 
 def register_errorhandlers(app):
+    """Register error handlers."""
 
     def errorhandler(error):
+        """Error handler."""
         response = error.to_json()
         response.status_code = error.status_code
         return response

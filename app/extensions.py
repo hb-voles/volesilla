@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 """Extensions module. Each extension is initialized in the app factory located in app.py."""
 
-from flask_sqlalchemy import SQLAlchemy, Model
+from flask_sqlalchemy import SQLAlchemy
 from flask_user import UserMixin, SQLAlchemyAdapter
 from flask_mail import Mail
 from flask_bootstrap import Bootstrap
 from flask_nav import Nav
 
 
-db = SQLAlchemy()
+db = SQLAlchemy()  # pylint: disable=invalid-name
 
 
 class User(db.Model, UserMixin):
-    id = db.Column(db.Integer, primary_key=True)
+    '''User data model'''
+    id = db.Column(db.Integer, primary_key=True)  # pylint: disable=invalid-name
 
     # User authentication information
     username = db.Column(db.String(50), nullable=False, unique=True)
@@ -29,7 +30,13 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(100), nullable=False, server_default='')
 
 
-db_adapter = SQLAlchemyAdapter(db, User)
-mail = Mail()
-bootstrap = Bootstrap()
-nav = Nav()
+class Internals(db.Model):
+    '''Table for internal data'''
+    id = db.Column(db.Integer, primary_key=True)  # pylint: disable=invalid-name
+    db_version = db.Column(db.Integer)
+
+
+db_adapter = SQLAlchemyAdapter(db, User, Internals)  # pylint: disable=invalid-name
+mail = Mail()  # pylint: disable=invalid-name
+bootstrap = Bootstrap()  # pylint: disable=invalid-name
+nav = Nav()  # pylint: disable=invalid-name

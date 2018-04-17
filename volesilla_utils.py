@@ -14,7 +14,7 @@ from flask.helpers import get_debug_flag
 
 from app.app import create_app
 from app.settings import DevConfig, ProdConfig
-from app.extensions import db
+from app.extensions import db, Internals
 
 
 def main():
@@ -38,7 +38,17 @@ def main():
         if not os.path.exists(db_dir):
             os.makedirs(db_dir)
 
-        db.create_all(app=create_app(config_object=CONFIG))
+        app = create_app(config_object=CONFIG)
+
+        with app.app_context():
+            db.init_app(app)
+            db.create_all()
+
+            internal = Internals(db_version=CONFIG.DB_VERSION)
+
+            db.session.add(internal)
+            db.session.commit()
+
         print('[SUCCESS] File [{}] created.'.format(CONFIG.DB_PATH))
 
 

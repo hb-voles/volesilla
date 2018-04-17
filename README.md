@@ -73,6 +73,7 @@ See:
         -e VIRTUAL_HOST=${COPED_HOST} \
         -e LETSENCRYPT_HOST=${COPED_LETSENCRYPT_HOST} \
         -e LETSENCRYPT_EMAIL=${COPED_LETSENCRYPT_EMAIL} \
+        -e COPED_SECRET_KEY=${COPED_SECRET_KEY} \
         -e COPED_HOST=${COPED_HOST} \
         -e COPED_MAIL_USERNAME=${COPED_MAIL_USERNAME} \
         -e COPED_MAIL_PASSWORD=${COPED_MAIL_PASSWORD} \
@@ -84,7 +85,6 @@ See:
 
     sudo docker container list
 
-
 ### Docker debbug
 
     sudo docker exec -ti <image> /usr/bin/bash
@@ -92,7 +92,6 @@ See:
     # Locally on server if you need work with le-companion:
     sudo docker exec le-companion /app/cert_status
     sudo docker exec le-companion /app/force_renew
-
 
 Note
 ----

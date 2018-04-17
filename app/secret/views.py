@@ -12,6 +12,7 @@ BLUEPRINT = Blueprint('secret', __name__, template_folder='templates')
 @BLUEPRINT.route('/secret')
 @login_required
 def index():
+    '''View function'''
 
     commit_hash = app.config['COMMIT_HASH']
     deploy_ts = app.config['DEPLOY_TS']

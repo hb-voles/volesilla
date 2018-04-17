@@ -6,7 +6,9 @@ import os
 class Config(object):
     """Base configuration."""
 
-    SECRET_KEY = os.environ.get('VOLESILLA_SECRET', 'secret-key')  # TODO: Change me
+    DB_VERSION = 1
+
+    SECRET_KEY = os.environ.get('COPED_SECRET_KEY', '')
     APP_DIR = os.path.abspath(os.path.dirname(__file__))  # This directory
     PROJECT_ROOT = os.path.abspath(os.path.join(APP_DIR, os.pardir))
     DEBUG_TB_INTERCEPT_REDIRECTS = False

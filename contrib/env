@@ -10,5 +10,6 @@ export COPED_RECAPTCHA_PRIVATE_KEY='required a private key'
 
 
 # don't edit those:
+export COPED_SECRET_KEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 export COPED_COMMIT_HASH=`git log -1 --pretty=format:%h`
 export COPED_DEPLOY_TS=`date +%FT%T%Z`
