@@ -1,5 +1,6 @@
-from setuptools import setup, find_packages
+'''Volesilla's Setup script'''
 
+from setuptools import setup, find_packages
 
 setup(
     name='volesilla',
