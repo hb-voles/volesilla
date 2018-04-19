@@ -95,9 +95,13 @@ See:
     sudo docker exec le-companion /app/cert_status
     sudo docker exec le-companion /app/force_renew
 
+Testing
+-------
+
+There no tests, only pep8 and pylint checks.
+
 Notes
 -----
-
 
     # setup commit template
     git config commit.template .git-commit-template
