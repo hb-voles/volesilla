@@ -26,7 +26,7 @@ class Config(object):
     MAIL_DEFAULT_SENDER = os.getenv('VLS_DEFAULT_SENDER',
                                     '"VoleS" <noreply@gmail.com>')
 
-    USER_APP_NAME = 'CS Teams'  # TODO
+    USER_APP_NAME = 'Hell-Bent VoleS'
 
     RECAPTCHA_PUBLIC_KEY = os.environ.get('VLS_RECAPTCHA_PUBLIC_KEY', '')
     RECAPTCHA_PRIVATE_KEY = os.environ.get('VLS_RECAPTCHA_PRIVATE_KEY', '')
