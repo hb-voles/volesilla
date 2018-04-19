@@ -95,7 +95,11 @@ See:
     sudo docker exec le-companion /app/cert_status
     sudo docker exec le-companion /app/force_renew
 
-Note
-----
+Notes
+-----
+
+
+    # setup commit template
+    git config commit.template .git-commit-template
 
 This project is inspired by <https://github.com/gothinkster/flask-realworld-example-app>
