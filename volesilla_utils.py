@@ -26,18 +26,18 @@ def main():
 
     if args['db_check'] and args['<db_file>']:
 
-        CONFIG = DevConfig if get_debug_flag() else ProdConfig
+        config = DevConfig if get_debug_flag() else ProdConfig
 
-        db_dir = os.path.join(CONFIG.PROJECT_ROOT, 'data')
-        CONFIG.DB_NAME = args['<db_file>']
-        CONFIG.DB_PATH = os.path.join(db_dir, CONFIG.DB_NAME)
-        CONFIG.SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(CONFIG.DB_PATH)
+        db_dir = os.path.join(config.PROJECT_ROOT, 'data')
+        config.DB_NAME = args['<db_file>']
+        config.DB_PATH = os.path.join(db_dir, config.DB_NAME)
+        config.SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(config.DB_PATH)
 
-        if not os.path.isfile(CONFIG.DB_PATH):
-            print('[ERROR] File [{}] doesn\'t exist!'.format(CONFIG.DB_PATH))
+        if not os.path.isfile(config.DB_PATH):
+            print('[ERROR] File [{}] doesn\'t exist!'.format(config.DB_PATH))
             sys.exit(2)
 
-        app = create_app(config_object=CONFIG)
+        app = create_app(config_object=config)
         db_version_from_conf = app.config['DB_VERSION']
 
         with app.app_context():
@@ -47,39 +47,38 @@ def main():
         if db_version_from_conf == db_version_from_file:
             print(
                 '[SUCCESS] File [{}] has the same version as is needed. [version: {}]'.format(
-                    CONFIG.DB_PATH,
+                    config.DB_PATH,
                     db_version_from_conf))
             sys.exit(0)
         else:
             print('[WARNING] File [{}] has different version [{}] as is needed [{}].'.format(
-                CONFIG.DB_PATH, db_version_from_file, db_version_from_conf))
+                config.DB_PATH, db_version_from_file, db_version_from_conf))
             sys.exit(1)
 
     if args['db_init'] and args['<db_file>']:
 
-        CONFIG = DevConfig if get_debug_flag() else ProdConfig
+        config = DevConfig if get_debug_flag() else ProdConfig
 
-        db_dir = os.path.join(CONFIG.PROJECT_ROOT, 'data')
-        CONFIG.DB_NAME = args['<db_file>']
-        CONFIG.DB_PATH = os.path.join(db_dir, CONFIG.DB_NAME)
-        CONFIG.SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(CONFIG.DB_PATH)
+        db_dir = os.path.join(config.PROJECT_ROOT, 'data')
+        config.DB_NAME = args['<db_file>']
+        config.DB_PATH = os.path.join(db_dir, config.DB_NAME)
+        config.SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(config.DB_PATH)
 
-        if os.path.isfile(CONFIG.DB_PATH):
-            print('[WARNING] File [{}] already exists.'.format(CONFIG.DB_PATH))
+        if os.path.isfile(config.DB_PATH):
+            print('[WARNING] File [{}] already exists.'.format(config.DB_PATH))
             sys.exit(0)
 
         if not os.path.exists(db_dir):
             os.makedirs(db_dir)
 
-        app = create_app(config_object=CONFIG)
+        app = create_app(config_object=config)
 
         with app.app_context():
             db.init_app(app)
             db.create_all()
 
-            internal = Internal(db_version=CONFIG.DB_VERSION)
+            internal = Internal(db_version=config.DB_VERSION)
 
-            # TODO: Remove this hack
             from app.extensions import Team
             team = Team(name='Hell-Bent VoleS', url='voles')
             db.session.add(team)
@@ -87,7 +86,7 @@ def main():
             db.session.add(internal)
             db.session.commit()
 
-        print('[SUCCESS] File [{}] created.'.format(CONFIG.DB_PATH))
+        print('[SUCCESS] File [{}] created.'.format(config.DB_PATH))
         sys.exit(0)
 
 
