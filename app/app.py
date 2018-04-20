@@ -4,7 +4,7 @@ from flask import Flask
 from flask_user import UserManager
 from flask_bootstrap import WebCDN
 from flask_nav import register_renderer
-from flask_nav.elements import Navbar, Link, View
+from flask_nav.elements import Navbar, Link
 
 from app.settings import ProdConfig
 from app.extensions import db, db_adapter, mail, bootstrap, nav
@@ -13,9 +13,7 @@ from app.nav import MyBootstrapRenderer
 from app.user_form import MyRegisterForm, MyLoginForm, MyForgotPasswordForm, \
     MyResetPasswordForm, MyChangePasswordForm
 
-from app import about
-from app import secret
-from app import volesilla
+from app import voles
 
 
 def create_app(config_object=ProdConfig):
@@ -59,18 +57,13 @@ def register_extensions(app):
 
     nav.init_app(app)
     nav.register_element('top', Navbar(
-        Link('CS Teams', app.config['HOME_URL']),
-        # View('About', 'about.index'),
-        View('Secret', 'secret.index'),
-        View('Sign Out', 'user.logout'),
+        Link('Hell-Bent VoleS', app.config['HOME_URL']),
     ))
 
 
 def register_blueprints(app):
     """Register Flask blueprints."""
-    app.register_blueprint(volesilla.views.BLUEPRINT)
-    app.register_blueprint(about.views.BLUEPRINT, url_prefix="/<path:team_url>")
-    app.register_blueprint(secret.views.BLUEPRINT)
+    app.register_blueprint(voles.views.BLUEPRINT)
 
 
 def register_errorhandlers(app):

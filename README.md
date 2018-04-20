@@ -16,7 +16,6 @@ Development
     export FLASK_DEBUG=1
     export FLASK_APP=volesilla.py
 
-    python volesilla_utils.py db_check volesilla_dev.db
     python volesilla_utils.py db_init volesilla_dev.db
 
     flask run
