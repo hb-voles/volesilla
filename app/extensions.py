@@ -36,14 +36,7 @@ class Internal(db.Model):
     db_version = db.Column(db.Integer)
 
 
-class Team(db.Model):
-    '''Teams table'''
-    id = db.Column(db.Integer, primary_key=True)  # pylint: disable=invalid-name
-    name = db.Column(db.String(50), nullable=False)
-    url = db.Column(db.String(50), nullable=False)
-
-
-db_adapter = SQLAlchemyAdapter(db, User, Internal, Team)  # pylint: disable=invalid-name
+db_adapter = SQLAlchemyAdapter(db, User, Internal)  # pylint: disable=invalid-name
 mail = Mail()  # pylint: disable=invalid-name
 bootstrap = Bootstrap()  # pylint: disable=invalid-name
 nav = Nav()  # pylint: disable=invalid-name

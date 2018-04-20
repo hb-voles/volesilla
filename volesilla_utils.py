@@ -79,10 +79,6 @@ def main():
 
             internal = Internal(db_version=config.DB_VERSION)
 
-            from app.extensions import Team
-            team = Team(name='Hell-Bent VoleS', url='voles')
-            db.session.add(team)
-
             db.session.add(internal)
             db.session.commit()
 
