@@ -99,6 +99,15 @@ Testing
 
 There no tests, only pep8 and pylint checks.
 
+Source
+------
+
+<http://flask.pocoo.org/docs/0.12/>
+
+<http://flask-sqlalchemy.pocoo.org/2.3/quickstart/>
+
+<https://flask-wtf.readthedocs.io/en/stable/>
+
 Notes
 -----
 
