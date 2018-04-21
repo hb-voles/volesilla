@@ -2,7 +2,7 @@
 """User views."""
 
 from flask import current_app
-from flask import Blueprint, render_template, redirect, request
+from flask import Blueprint, render_template, redirect, request, session, url_for
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
@@ -41,6 +41,14 @@ def login():
         next=target,
         commit_hash=current_app.config['COMMIT_HASH'],
         deploy_ts=current_app.config['DEPLOY_TS'])
+
+
+@BLUEPRINT.route('/logout')
+def logout():
+    '''View function'''
+
+    session.pop('username', None)
+    return redirect(url_for('voles.index'))
 
 
 @BLUEPRINT.route('/secret', methods=('GET', 'POST'))
