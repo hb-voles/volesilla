@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
 
-from flask import Flask
+from flask import Flask, session
 from flask_bootstrap import WebCDN
 
 from app.settings import ProdConfig
 from app.extensions import flask_bcrypt, db, mail, bootstrap, csrf
 from app.exceptions import InvalidUsage
+from app.navbar import build_navbar
 
 from app import account
 from app import voles
@@ -23,6 +24,19 @@ def create_app(config_object=ProdConfig):
     register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
+
+    @app.context_processor
+    def inject_navbar():  # pylint: disable=unused-variable
+        '''Inject our navbar to the global context'''
+        return build_navbar()
+
+    @app.context_processor
+    def is_authenticated():  # pylint: disable=unused-variable
+        '''Tell if user is authenticated'''
+        def authenticated():
+            '''Tell if user is authenticated'''
+            return True if 'username' in session else False
+        return dict(is_authenticated=authenticated)
 
     return app
 

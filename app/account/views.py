@@ -8,8 +8,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired
 
-from app.account.controller import authenticate
 from app.auth import login_required
+from app.account.controller import authenticate
+
 
 BLUEPRINT = Blueprint('account', __name__, template_folder='templates')
 
