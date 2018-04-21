@@ -38,6 +38,11 @@ def create_app(config_object=ProdConfig):
             return True if 'username' in session else False
         return dict(is_authenticated=authenticated)
 
+    @app.context_processor
+    def inject_footer_variables():  # pylint: disable=unused-variable
+        '''Inject footer variable'''
+        return dict(commit_hash=app.config['COMMIT_HASH'], deploy_ts=app.config['DEPLOY_TS'])
+
     return app
 
 
