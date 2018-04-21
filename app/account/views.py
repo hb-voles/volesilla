@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """User views."""
 
-from flask import current_app
 from flask import Blueprint, render_template, redirect, request, session, url_for
 
 from flask_wtf import FlaskForm
@@ -39,9 +38,7 @@ def login():
     return render_template(
         'account/login.html',
         form=form,
-        next=target,
-        commit_hash=current_app.config['COMMIT_HASH'],
-        deploy_ts=current_app.config['DEPLOY_TS'])
+        next=target)
 
 
 @BLUEPRINT.route('/logout')
@@ -57,10 +54,7 @@ def logout():
 def secret():
     '''View function'''
 
-    return render_template(
-        'account/secret.html',
-        commit_hash=current_app.config['COMMIT_HASH'],
-        deploy_ts=current_app.config['DEPLOY_TS'])
+    return render_template('account/secret.html')
 
 
 @BLUEPRINT.route('/secret2', methods=('GET', 'POST'))
@@ -68,7 +62,4 @@ def secret():
 def secret2():
     '''View function'''
 
-    return render_template(
-        'account/secret2.html',
-        commit_hash=current_app.config['COMMIT_HASH'],
-        deploy_ts=current_app.config['DEPLOY_TS'])
+    return render_template('account/secret2.html')
