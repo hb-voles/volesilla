@@ -17,6 +17,13 @@
         {% import "bootstrap/wtf.html" as wtf %}
     </head>
 
+
+    {% set mybar=navbar.public %}
+    {% if is_authenticated()==True %}
+        {% set mybar=navbar.private %}
+    {% endif %}
+
+
     <body>
 
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -28,13 +35,24 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="https://voles.cz/">Hell-Bent VoleS</a>
+          {% for item in mybar.main %}
+          <a class="navbar-brand" href="{{ item.link }}">{{ item.label }}</a>
+          {% endfor %}
         </div>
         <div class="navbar-collapse collapse" id="0cb49d0eddca5d104e75fd19a3ede0fda84db491">
-          <ul class="nav navbar-nav navbar-right">
+          <ul class="nav navbar-nav">
+            {% for item in mybar.left %}
             <li>
-              <a href="/login" title="Log In">Sign In</a>
+              <a href="{{ item.link }}" title="{{ item.label }}">{{ item.label }}</a>
             </li>
+            {% endfor %}
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            {% for item in mybar.right %}
+            <li>
+              <a href="{{ item.link }}" title="{{ item.label }}">{{ item.label }}</a>
+            </li>
+            {% endfor %}
           </ul>
         </div>
       </div>
