@@ -6,7 +6,7 @@ Log In
 
 {% block content %}
 
-    <form method="POST" action="/login">
+    <form method="POST" action="{{ url_for('account.login', next=next) }}">
         {{ form.csrf_token }}
         <p> {{ form.username.label }} <br> {{ form.username(size=20) }}
         <p> {{ form.password.label }} <br> {{ form.password(size=20) }} <br>

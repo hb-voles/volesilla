@@ -1,14 +1,26 @@
 """Data model for user"""
 
+from flask import session
+
 from app.extensions import flask_bcrypt
 from app.account.model import User
 
 
-def authenticate(name, password):
-    '''Return True if user is authenticated else False'''
+def authenticate(username, password):
+    '''
+    Return True (and add username to session) if user is authenticated
+    else False
+    '''
 
-    user = User.query.filter_by(username=name).first()
+    user = User.query.filter_by(username=username).first()
     if not user:
         return False
 
-    return flask_bcrypt.check_password_hash(user.password, password)
+    authenticated = flask_bcrypt.check_password_hash(user.password, password)
+
+    if not authenticated:
+        return False
+
+    session['username'] = username
+
+    return True
