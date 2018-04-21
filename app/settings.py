@@ -17,6 +17,10 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     BOOTSTRAP_SERVE_LOCAL = False
 
+    # USER_PASSWORD_HASH = 'bcrypt'
+    # USER_PASSWORD_HASH_MODE = 'passlib'
+    # SECURITY_PASSWORD_SALT = 'aaaaa'
+
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 465
     MAIL_USE_SSL = True
@@ -25,6 +29,9 @@ class Config(object):
 
     MAIL_DEFAULT_SENDER = os.getenv('VLS_DEFAULT_SENDER',
                                     '"VoleS" <noreply@gmail.com>')
+
+    APP_ADMIN_MAIL = os.environ.get('VLS_APP_ADMIN_MAIL', '')
+    APP_ADMIN_PASS = os.environ.get('VLS_APP_ADMIN_PASS', '')
 
     USER_APP_NAME = 'Hell-Bent VoleS'
 

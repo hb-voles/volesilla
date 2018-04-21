@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
+
 from flask import Flask
-from flask_user import UserManager
 from flask_bootstrap import WebCDN
-from flask_nav import register_renderer
-from flask_nav.elements import Navbar, Link
 
 from app.settings import ProdConfig
-from app.extensions import db, db_adapter, mail, bootstrap, nav
+from app.extensions import flask_bcrypt, db, mail, bootstrap, csrf
 from app.exceptions import InvalidUsage
-from app.nav import MyBootstrapRenderer
-from app.user_form import MyRegisterForm, MyLoginForm, MyForgotPasswordForm, \
-    MyResetPasswordForm, MyChangePasswordForm
 
+from app import account
 from app import voles
 
 
@@ -27,7 +23,6 @@ def create_app(config_object=ProdConfig):
     register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
-    register_renderer(app, 'bootstrap', MyBootstrapRenderer)
 
     return app
 
@@ -35,17 +30,9 @@ def create_app(config_object=ProdConfig):
 def register_extensions(app):
     """Register Flask extensions."""
 
-    db.init_app(app)
+    flask_bcrypt.init_app(app)
 
-    UserManager(
-        db_adapter,
-        app,
-        login_form=MyLoginForm,
-        register_form=MyRegisterForm,
-        forgot_password_form=MyForgotPasswordForm,
-        reset_password_form=MyResetPasswordForm,
-        change_password_form=MyChangePasswordForm,
-    )
+    db.init_app(app)
 
     mail.init_app(app)
 
@@ -55,14 +42,12 @@ def register_extensions(app):
     app.extensions['bootstrap']['cdns'].update(
         {'bootstrapcdn': bootstrapcdn, 'bootswatchcdn': bootswatchcdn})
 
-    nav.init_app(app)
-    nav.register_element('top', Navbar(
-        Link('Hell-Bent VoleS', app.config['HOME_URL']),
-    ))
+    csrf.init_app(app)
 
 
 def register_blueprints(app):
     """Register Flask blueprints."""
+    app.register_blueprint(account.views.BLUEPRINT)
     app.register_blueprint(voles.views.BLUEPRINT)
 
 
