@@ -10,6 +10,7 @@ from app.exceptions import InvalidUsage
 from app.navbar import build_navbar
 
 from app import account
+from app import invitation
 from app import voles
 
 
@@ -67,6 +68,7 @@ def register_extensions(app):
 def register_blueprints(app):
     """Register Flask blueprints."""
     app.register_blueprint(account.views.BLUEPRINT)
+    app.register_blueprint(invitation.views.BLUEPRINT)
     app.register_blueprint(voles.views.BLUEPRINT)
 
 
