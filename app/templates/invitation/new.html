@@ -1,0 +1,19 @@
+{% extends "common/page_base.html" %}
+
+{% block title %}
+New Invite
+{% endblock %}
+
+{% block content %}
+
+    <form method="POST" action="{{ url_for('invitation.new') }}">
+        {{ form.csrf_token }}
+        <p> {{ form.created_by.label }} <br> {{ form.created_by(size=20) }}
+        <p> {{ form.created.label }} <br> {{ form.created(size=20) }}
+        <p> {{ form.valid_until.label }} <br> {{ form.valid_until(size=20) }}
+        <p> {{ form.for_user.label }} <br> {{ form.for_user(size=20) }} <br>
+        <p> <input type="submit" value="Create Invite">
+    </form>
+
+{% endblock %}
+
