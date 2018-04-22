@@ -10,4 +10,4 @@ BLUEPRINT = Blueprint('voles', __name__, template_folder='templates')
 def index():
     '''View function'''
 
-    return render_template('pages/voles.html')
+    return render_template('voles/voles.html')
