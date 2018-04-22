@@ -11,29 +11,27 @@ Invitations
     </p>
 
 
-    <div class="container">
-        <table class="table table-hover">
+    <table class="table table-hover">
 
-            <tr>
-                <th>token</th>
-                <th>active</th>
-                <th>valid until</th>
-                <th>created by</th>
-                <th>for user</th>
-            </tr>
+        <tr>
+            <th>token</th>
+            <th>active</th>
+            <th>valid until</th>
+            <th>created by</th>
+            <th>for user</th>
+        </tr>
 
 
-            {% for invite in invites %}
-            <tr>
-                <td>{{ invite.token }}</td>
-                <td>{{ invite.active }}</td>
-                <td>{{ invite.valid_until }}</td>
-                <td>{{ invite.created_by }}</td>
-                <td>{{ invite.for_user }}</td>
-            </tr>
-            {% endfor %}
+        {% for invite in invites %}
+        <tr>
+            <td>{{ invite.token }}</td>
+            <td>{{ invite.active }}</td>
+            <td>{{ invite.valid_until }}</td>
+            <td>{{ invite.created_by }}</td>
+            <td>{{ invite.for_user }}</td>
+        </tr>
+        {% endfor %}
 
-        </table>
-    </div>
+    </table>
 
 {% endblock %}
