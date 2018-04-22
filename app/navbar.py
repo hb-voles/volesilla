@@ -14,18 +14,6 @@ def build_navbar():
             'visibility': 'both',
         },
         {
-            'link': url_for('account.secret'),
-            'label': 'Secret',
-            'position': 'left',
-            'visibility': 'private',
-        },
-        {
-            'link': url_for('account.secret2'),
-            'label': 'Secret 2',
-            'position': 'left',
-            'visibility': 'private',
-        },
-        {
             'link': url_for('account.login'),
             'label': 'Sign In',
             'position': 'right',
