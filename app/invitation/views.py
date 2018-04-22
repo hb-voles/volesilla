@@ -16,7 +16,7 @@ from app.invitation.controller import create_invite_token
 BLUEPRINT = Blueprint('invitation', __name__, template_folder='templates')
 
 
-class NewInviteForm(FlaskForm):
+class InvitationForm(FlaskForm):
     '''Login form'''
 
     created_by = StringField('created_by', render_kw={'disabled': 'disabled'})
@@ -45,7 +45,7 @@ def new():
     '''View function'''
 
     with current_app.app_context():
-        form = NewInviteForm(created_by=session['username'])
+        form = InvitationForm(created_by=session['username'])
 
         if form.validate_on_submit():
             create_invite_token(
