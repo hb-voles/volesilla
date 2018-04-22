@@ -7,7 +7,6 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 from wtforms.validators import DataRequired
 
-from app.auth import login_required
 from app.account.controller import authenticate
 
 
@@ -28,7 +27,7 @@ def login():
     if 'next' in request.args:
         target = request.args['next']
     else:
-        target = '/secret'
+        target = '/'
 
     form = LoginForm()
 
@@ -47,19 +46,3 @@ def logout():
 
     session.pop('username', None)
     return redirect(url_for('voles.index'))
-
-
-@BLUEPRINT.route('/secret', methods=('GET', 'POST'))
-@login_required
-def secret():
-    '''View function'''
-
-    return render_template('account/secret.html')
-
-
-@BLUEPRINT.route('/secret2', methods=('GET', 'POST'))
-@login_required
-def secret2():
-    '''View function'''
-
-    return render_template('account/secret2.html')
