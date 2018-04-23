@@ -1,0 +1,131 @@
+{% extends "common/page_base.html" %}
+
+{% block title %}
+Registration
+{% endblock %}
+
+{% block content %}
+
+
+<div class="row">
+  <div class="col-md-7">
+
+    <form method="POST" action="{{ url_for('account.registration') }}">
+        <fieldset>
+            <legend>Registration Form</legend>
+            {{ form.csrf_token }}
+            <div class="form-group">
+                {% for error in form.username.errors %}
+                    <p class="text-danger">{{ error }}</p>
+                {% endfor %}
+
+                {{ form.username.label }} <br> {{ form.username(size=25) }}
+            </div>
+            <div class="form-group">
+                {% for error in form.email.errors %}
+                    <p class="text-danger">{{ error }}</p>
+                {% endfor %}
+
+                {{ form.email.label }} <br> {{ form.email(size=25) }}
+            </div>
+            <div class="form-group">
+                {% for error in form.password1.errors %}
+                    <p class="text-danger">{{ error }}</p>
+                {% endfor %}
+
+                {{ form.password1.label }} <br> {{ form.password1(size=25) }}
+            </div>
+            <div class="form-group">
+                {% for error in form.password2.errors %}
+                    <p class="text-danger">{{ error }}</p>
+                {% endfor %}
+
+                {{ form.password2.label }} <br> {{ form.password2(size=25) }}
+            </div>
+            <div class="form-group">
+                {% for error in form.token.errors %}
+                    <p class="text-danger">{{ error }}</p>
+                {% endfor %}
+
+                {{ form.token.label }} <br> {{ form.token(size=34) }}
+            </div>
+            <div class="form-group">
+                {% for error in form.accept_gdpr.errors %}
+                    <p class="text-danger">{{ error }}</p>
+                {% endfor %}
+
+                {{ form.accept_gdpr.label }} <br> {{ form.accept_gdpr }}
+            </div>
+            <div class="form-group">
+                {% for error in form.recaptcha.errors %}
+                    <p class="text-danger">{{ error }}</p>
+                {% endfor %}
+
+                {{ form.recaptcha }}
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="Register">
+            </div>
+        </fieldset>
+    </form>
+
+  </div>
+  <div class="col-md-5">
+
+    <div class="panel panel-primary">
+      <div class="panel-heading">
+        <h3 class="panel-title">GDPR Statement (v1)</h3>
+      </div>
+      <div class="panel-body">
+
+        <p>
+            Here at <strong>voles.cz</strong> we take your privacy seriously and
+            will only use your personal information to administer your account and
+            to provide the services you have requested from us.
+        </p>
+
+
+        <h5>What we store</h5>
+
+        <p>
+            We primarly store your <strong>username, e-mail, steam ID, scores
+            on CS:GO matches,</strong> etc.
+        </p><p>
+            And of course, we use <strong>cookies</strong> :-)
+        </p>
+
+
+        <h5>What we share with other companies</h5>
+
+        <p>
+            We use <strong>Google's reCAPTCHA v2</strong> to be sure that
+            our system is in safety against robots.
+        </p><p>
+            This technology scans your computer for google's cookies, your
+            browser environment and so no. For more information, see
+            <a href="https://policies.google.com/privacy">Google's Privacy Policy</a>.
+        </p><p>
+            We don't provide any other information to any other company.
+        </p>
+
+        <h5>Contacts from us</h5>
+
+        <p>
+            We send you an email in necessary cases: a registration confirmation, forgotten password, etc.
+        </p>
+
+
+        <h5>Leaving</h5>
+
+        <p>
+            If you wish to leave our services, your personal data will be deleted at once.
+            Your scores in CS:GO matches are public data and we will collect it if you still play with us.
+        </p>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
