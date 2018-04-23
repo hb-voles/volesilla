@@ -14,7 +14,7 @@ def build_navbar():
             'visibility': 'both',
         },
         {
-            'link': url_for('invitation.index'),
+            'link': url_for('account.invitation_index'),
             'label': 'Invitations',
             'position': 'left',
             'visibility': 'private',
