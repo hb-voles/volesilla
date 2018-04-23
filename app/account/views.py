@@ -3,8 +3,8 @@
 
 from flask import Blueprint, render_template, redirect, request, session, url_for
 
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField
+from flask_wtf import FlaskForm, RecaptchaField
+from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import DataRequired
 
 from app.account.controller import authenticate
@@ -18,6 +18,7 @@ class LoginForm(FlaskForm):
 
     username = StringField('username', validators=[DataRequired()])
     password = PasswordField('password', validators=[DataRequired()])
+    recaptcha = RecaptchaField()
 
 
 @BLUEPRINT.route('/login', methods=('GET', 'POST'))
