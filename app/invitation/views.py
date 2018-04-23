@@ -19,11 +19,11 @@ BLUEPRINT = Blueprint('invitation', __name__, template_folder='templates')
 class InvitationForm(FlaskForm):
     '''Login form'''
 
-    created_by = StringField('created_by', render_kw={'disabled': 'disabled'})
-    created = StringField('created', render_kw={'disabled': 'disabled'}, default=datetime.now())
+    created_by = StringField('created_by', render_kw={'readonly': 'readonly'})
+    created = StringField('created', render_kw={'readonly': 'readonly'}, default=datetime.now())
     valid_until = StringField(
         'valid_until',
-        render_kw={'disabled': 'disabled'},
+        render_kw={'readonly': 'readonly'},
         default=datetime.now() + timedelta(days=2)
     )
     for_user = StringField('for_user', validators=[DataRequired()])
