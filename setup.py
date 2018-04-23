@@ -20,6 +20,7 @@ setup(
         'Flask-WTF==0.14.2',
         'wtforms',
         'flask-bcrypt',
+        'python-dateutil',
         'docopt',
         'uWSGI==2.0.17',
         'pylint',
