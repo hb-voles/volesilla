@@ -1,11 +1,12 @@
 """Data model for user"""
 
+import uuid
 from datetime import datetime
 from flask import session
 
 from app.extensions import flask_bcrypt, db
 from app.account.model import User
-from app.invitation.model import Invite
+from app.account.model import Invite
 
 
 def authenticate(username, password):
@@ -26,6 +27,19 @@ def authenticate(username, password):
     session['username'] = username
 
     return True
+
+
+def create_invite_token(valid_until, created_by, for_user):
+    '''Save invite_token into DB'''
+
+    invite = Invite(
+        token=uuid.uuid4().hex,
+        valid_until=valid_until,
+        created_by=created_by,
+        for_user=for_user)
+
+    db.session.add(invite)
+    db.session.commit()
 
 
 def validate_invite_token(invite_token):
