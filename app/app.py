@@ -25,24 +25,7 @@ def create_app(config_object=ProdConfig):
     register_extensions(app)
     register_blueprints(app)
     register_errorhandlers(app)
-
-    @app.context_processor
-    def inject_navbar():  # pylint: disable=unused-variable
-        '''Inject our navbar to the global context'''
-        return build_navbar()
-
-    @app.context_processor
-    def is_authenticated():  # pylint: disable=unused-variable
-        '''Tell if user is authenticated'''
-        def authenticated():
-            '''Tell if user is authenticated'''
-            return True if 'username' in session else False
-        return dict(is_authenticated=authenticated)
-
-    @app.context_processor
-    def inject_footer_variables():  # pylint: disable=unused-variable
-        '''Inject footer variable'''
-        return dict(commit_hash=app.config['COMMIT_HASH'], deploy_ts=app.config['DEPLOY_TS'])
+    register_context_processots(app)
 
     return app
 
@@ -82,3 +65,25 @@ def register_errorhandlers(app):
         return response
 
     app.errorhandler(InvalidUsage)(errorhandler)
+
+
+def register_context_processots(app):
+    '''Register context processors.'''
+
+    @app.context_processor
+    def inject_navbar():  # pylint: disable=unused-variable
+        '''Inject our navbar to the global context'''
+        return build_navbar()
+
+    @app.context_processor
+    def is_authenticated():  # pylint: disable=unused-variable
+        '''Tell if user is authenticated'''
+        def authenticated():
+            '''Tell if user is authenticated'''
+            return True if 'username' in session else False
+        return dict(is_authenticated=authenticated)
+
+    @app.context_processor
+    def inject_footer_variables():  # pylint: disable=unused-variable
+        '''Inject footer variable'''
+        return dict(commit_hash=app.config['COMMIT_HASH'], deploy_ts=app.config['DEPLOY_TS'])
