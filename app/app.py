@@ -5,7 +5,7 @@ from flask import Flask, session
 from flask_bootstrap import WebCDN
 
 from app.settings import ProdConfig
-from app.extensions import flask_bcrypt, db, mail, bootstrap, csrf
+from app.extensions import BCRYPT, DB, MAIL, BOOTSTRAP, CSRF
 from app.exceptions import InvalidUsage
 from app.navbar import build_navbar
 
@@ -32,19 +32,19 @@ def create_app(config_object=ProdConfig):
 def register_extensions(app):
     """Register Flask extensions."""
 
-    flask_bcrypt.init_app(app)
+    BCRYPT.init_app(app)
 
-    db.init_app(app)
+    DB.init_app(app)
 
-    mail.init_app(app)
+    MAIL.init_app(app)
 
-    bootstrap.init_app(app)
+    BOOTSTRAP.init_app(app)
     bootstrapcdn = WebCDN("https://stackpath.bootstrapcdn.com/bootstrap/3.3.7/")
     bootswatchcdn = WebCDN("https://stackpath.bootstrapcdn.com/bootswatch/3.3.7/")
     app.extensions['bootstrap']['cdns'].update(
         {'bootstrapcdn': bootstrapcdn, 'bootswatchcdn': bootswatchcdn})
 
-    csrf.init_app(app)
+    CSRF.init_app(app)
 
 
 def register_blueprints(app):

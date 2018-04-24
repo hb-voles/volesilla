@@ -1,12 +1,13 @@
 """Data model for user"""
 
 import uuid
-from datetime import datetime
-from flask import session
+from urllib.parse import urljoin
+from datetime import datetime, timedelta
+from flask import current_app, session, render_template, url_for
+from flask_mail import Message
 
-from app.extensions import flask_bcrypt, db
-from app.account.model import User
-from app.account.model import Invite
+from app.extensions import BCRYPT, DB, MAIL
+from app.account.model import User, Token
 
 
 def authenticate(username, password):
@@ -19,7 +20,7 @@ def authenticate(username, password):
     if not user:
         return False
 
-    authenticated = flask_bcrypt.check_password_hash(user.password, password)
+    authenticated = BCRYPT.check_password_hash(user.password, password)
 
     if not authenticated:
         return False
@@ -32,20 +33,20 @@ def authenticate(username, password):
 def create_invite_token(valid_until, created_by, for_user):
     '''Save invite_token into DB'''
 
-    invite = Invite(
+    invite = Token(
         token=uuid.uuid4().hex,
         valid_until=valid_until,
         created_by=created_by,
         for_user=for_user)
 
-    db.session.add(invite)
-    db.session.commit()
+    DB.session.add(invite)
+    DB.session.commit()
 
 
 def validate_invite_token(invite_token):
     '''Return True if invite token is valid else False'''
 
-    invite = Invite.query.filter_by(token=invite_token).first()
+    invite = Token.query.filter_by(token=invite_token).first()
 
     if invite:
         return (invite.valid_until > datetime.now()) and invite.active
