@@ -31,7 +31,6 @@ class Config(object):
                                     '"VoleS" <noreply@gmail.com>')
 
     APP_ADMIN_MAIL = os.environ.get('VLS_APP_ADMIN_MAIL', '')
-    APP_ADMIN_PASS = os.environ.get('VLS_APP_ADMIN_PASS', '')
 
     USER_APP_NAME = 'Hell-Bent VoleS'
 

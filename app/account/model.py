@@ -1,30 +1,41 @@
-"""Data model for user"""
+'''Data model for user'''
 
-from app.extensions import db
+from enum import Enum, unique
+import uuid
+
+from app.extensions import DB, UUID
 
 
-class User(db.Model):
+class User(DB.Model):
     '''User data model'''
-    id = db.Column(db.Integer, primary_key=True)  # pylint: disable=invalid-name
 
-    # User authentication information
-    username = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String(255), nullable=False, server_default='')
-
-    # User email information
-    email = db.Column(db.String(255), nullable=False, unique=True)
-    confirmed_at = db.Column(db.DateTime())
-
-    # User information
-    active = db.Column('is_active', db.Boolean(), nullable=False,
-                       server_default='0')
+    uid = DB.Column(UUID, primary_key=True, default=uuid.uuid4)
+    email = DB.Column(DB.String(255), nullable=False, unique=True)
+    password = DB.Column(DB.String(255), nullable=False, server_default='')
+    confirmed_at = DB.Column(DB.DateTime())
+    is_active = DB.Column(DB.Boolean(), nullable=False, server_default='0')
 
 
-class Invite(db.Model):
-    '''User data model'''
-    id = db.Column(db.Integer, primary_key=True)  # pylint: disable=invalid-name
-    token = db.Column(db.Integer, nullable=False, unique=True)
-    valid_until = db.Column(db.DateTime(), nullable=False)
-    created_by = db.Column(db.String(50), db.ForeignKey('user.username'), nullable=False)
-    active = db.Column('is_active', db.Boolean(), nullable=False, server_default='1')
-    for_user = db.Column(db.String(50), nullable=False)
+class Token(DB.Model):
+    '''Token data model'''
+
+    @unique
+    class TokenType(Enum):
+        '''Type of tokens'''
+
+        INVITE = 1
+        CONFIRM_REGISTRATION = 2
+        FINAL_REGISTRATION = 3
+
+    token = DB.Column(UUID, primary_key=True, default=uuid.uuid4)
+    token_type = DB.Column(DB.Integer, nullable=False)
+    created_at = DB.Column(DB.DateTime(), nullable=False)
+    valid_until = DB.Column(DB.DateTime(), nullable=False)
+    is_active = DB.Column(DB.Boolean(), nullable=False, server_default='1')
+    user_uid = DB.Column(UUID, DB.ForeignKey('user.uid'), nullable=False)
+    note = DB.Column(DB.String(20), nullable=False, server_default='')
+
+    user = DB.relationship('User', back_populates='tokens')
+
+
+User.tokens = DB.relationship('Token', order_by=Token.token, back_populates='user')

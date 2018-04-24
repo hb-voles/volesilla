@@ -10,9 +10,9 @@ from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import DataRequired
 
 from app.auth import login_required
-from app.account.model import Invite
+from app.account.model import Token
 from app.account.controller import authenticate, create_invite_token, \
-    validate_invite_token, create_account
+    validate_invite_token, create_account, send_confirmation_mail
 
 
 BLUEPRINT = Blueprint('account', __name__, template_folder='templates')
@@ -123,7 +123,7 @@ def registration():
 def invitation_index():
     '''View function'''
 
-    invites = Invite.query.all()
+    invites = Token.query.all()
 
     return render_template('account/invitation_index.html', invites=invites)
 

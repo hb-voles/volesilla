@@ -10,16 +10,16 @@ Options:
 
 import os
 import sys
-from datetime import datetime
+import uuid
 from docopt import docopt
 from flask.helpers import get_debug_flag
 
 from app.app import create_app
 from app.settings import DevConfig, ProdConfig
-from app.extensions import db
+from app.extensions import DB
 
-from app.extensions import flask_bcrypt
-from app.account.model import User
+from app.extensions import BCRYPT
+from app.account.model import User, Token
 
 
 def main():
@@ -46,18 +46,16 @@ def main():
         app = create_app(config_object=config)
 
         with app.app_context():
-            db.init_app(app)
-            db.create_all()
+            DB.init_app(app)
+            DB.create_all()
 
             admin = User(
-                username='admin',
-                password=flask_bcrypt.generate_password_hash(config.APP_ADMIN_PASS),
                 email=config.APP_ADMIN_MAIL,
-                confirmed_at=datetime.now(),
-                active=True)
+                password=BCRYPT.generate_password_hash(uuid.uuid4().hex),
+                is_active=True)
 
-            db.session.add(admin)
-            db.session.commit()
+            DB.session.add(admin)
+            DB.session.commit()
 
         print('[SUCCESS] File [{}] created.'.format(config.DB_PATH))
         sys.exit(0)
