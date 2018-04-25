@@ -6,7 +6,7 @@ import os
 class Config(object):
     """Base configuration."""
 
-    DB_VERSION = 2
+    DB_VERSION = 3
     GDPR_VERSION = 1
 
     HOME_URL = os.environ.get('VLS_BASE_URL', 'http://127.0.0.1:5000/')
