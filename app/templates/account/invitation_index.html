@@ -15,20 +15,24 @@ Invitations
 
         <tr>
             <th>token</th>
+            <th>type</th>
             <th>active</th>
+            <th>created</th>
             <th>valid until</th>
             <th>created by</th>
-            <th>for user</th>
+            <th>note</th>
         </tr>
 
 
-        {% for invite in invites %}
+        {% for invitation in invitations %}
         <tr>
-            <td>{{ invite.token }}</td>
-            <td>{{ invite.active }}</td>
-            <td>{{ invite.valid_until }}</td>
-            <td>{{ invite.created_by }}</td>
-            <td>{{ invite.for_user }}</td>
+            <td>{{ invitation.uid.hex }}</td>
+            <td>{{ invitation.token_type }}</td>
+            <td>{{ invitation.is_active }}</td>
+            <td>{{ invitation.created_at }}</td>
+            <td>{{ invitation.valid_until }}</td>
+            <td>{{ invitation.user_uid }}</td>
+            <td>{{ invitation.note }}</td>
         </tr>
         {% endfor %}
 
