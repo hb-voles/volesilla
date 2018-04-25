@@ -17,16 +17,17 @@ class User(DB.Model):
     is_active = DB.Column(DB.Boolean(), nullable=False, server_default='0')
 
 
+@unique
+class TokenType(Enum):
+    '''Type of tokens'''
+
+    INVITATION = 1
+    REGISTRATION = 2
+    RESET_PASSWORD = 3
+
+
 class Token(DB.Model):
     '''Token data model'''
-
-    @unique
-    class TokenType(Enum):
-        '''Type of tokens'''
-
-        INVITATION = 1
-        REGISTRATION = 2
-        RESET_PASSWORD = 3
 
     uid = DB.Column(UUID, primary_key=True, default=uuid.uuid4)
     token_type = DB.Column(DB.Integer, nullable=False)

@@ -10,7 +10,7 @@ from wtforms import StringField, PasswordField, BooleanField
 from wtforms.validators import DataRequired
 
 from app.auth import login_required
-from app.account.model import Token
+from app.account.model import Token, TokenType
 from app.account.controller import authenticate, create_account, \
     send_registration_mail, search_user_by_email, send_reset_password_mail, change_password
 from app.account.controller_token import verify_token_by_uid, create_invitation_token
@@ -163,7 +163,7 @@ def registration():
                 '<strong>mandatory</strong> for successful registration!'
             )
 
-        if not verify_token_by_uid(form.token.data):
+        if not verify_token_by_uid(form.token.data, TokenType.INVITATION):
             form.token.errors.append('Invalid invitation token!')
 
         if not form.errors:
@@ -175,6 +175,7 @@ def registration():
 
             send_registration_mail(user)
 
+            # TODO: Tady to chce speacial stránku, přihlásit a nechat vyplnit profil.
             return render_template('account/registration_confirmation.html', mail=form.email.data)
 
     if form.errors:
@@ -191,7 +192,7 @@ def registration():
 def registration_confirmation_final(token_uid):
     '''View function'''
 
-    if not verify_token_by_uid(token_uid):
+    if not verify_token_by_uid(token_uid, TokenType.REGISTRATION):
         pass
 
     # TODO: Potvrdit a dokoncit user v DB, zinvalidnit token, nebo rict NE
