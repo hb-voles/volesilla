@@ -13,6 +13,7 @@ class User(DB.Model):
     email = DB.Column(DB.String(255), nullable=False, unique=True)
     password = DB.Column(DB.String(255), nullable=False, server_default='')
     confirmed_at = DB.Column(DB.DateTime())
+    gdpr_version = DB.Column(DB.Integer, nullable=False)
     is_active = DB.Column(DB.Boolean(), nullable=False, server_default='0')
 
 
@@ -24,9 +25,8 @@ class Token(DB.Model):
         '''Type of tokens'''
 
         INVITATION = 1
-        CONFIRM_REGISTRATION = 2
-        FINAL_REGISTRATION = 3
-        RESET_PASSWORD = 4
+        REGISTRATION = 2
+        RESET_PASSWORD = 3
 
     uid = DB.Column(UUID, primary_key=True, default=uuid.uuid4)
     token_type = DB.Column(DB.Integer, nullable=False)

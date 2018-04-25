@@ -52,7 +52,9 @@ def main():
             admin = User(
                 email=config.APP_ADMIN_MAIL,
                 password=BCRYPT.generate_password_hash(uuid.uuid4().hex),
-                is_active=True)
+                gdpr_version=config.GDPR_VERSION,
+                is_active=False
+            )
 
             DB.session.add(admin)
             DB.session.commit()

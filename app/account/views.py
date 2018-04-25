@@ -11,8 +11,8 @@ from wtforms.validators import DataRequired
 
 from app.auth import login_required
 from app.account.model import Token
-from app.account.controller import authenticate, validate_invite_token, create_account, \
-    send_confirmation_mail, search_user_by_email, send_reset_password_mail, change_password
+from app.account.controller import authenticate, create_account, \
+    send_registration_mail, search_user_by_email, send_reset_password_mail, change_password
 from app.account.controller_token import verify_token_by_uid, create_invitation_token
 
 
@@ -163,27 +163,28 @@ def registration():
                 '<strong>mandatory</strong> for successful registration!'
             )
 
-        if not validate_invite_token(form.token.data):
+        if not verify_token_by_uid(form.token.data):
             form.token.errors.append('Invalid invitation token!')
 
         if not form.errors:
 
-            create_account(
-                username=form.username.data,
+            user = create_account(
                 password=form.password1.data,
                 email=form.email.data,
-                invite_token=form.token.data,
-                confirmed_at=datetime.now()
             )
 
-            send_confirmation_mail(form.email.data)
+            send_registration_mail(user)
 
             return render_template('account/registration_confirmation.html', mail=form.email.data)
 
     if form.errors:
         flash('Registration form isn\'t filled correctly!', 'error')
 
-    return render_template('account/registration.html', form=form)
+    return render_template(
+        'account/registration.html',
+        form=form,
+        gdpr_version=current_app.config['GDPR_VERSION']
+    )
 
 
 @BLUEPRINT.route('/registration/final/<token_uid>')
@@ -202,9 +203,9 @@ def registration_confirmation_final(token_uid):
 def invitation_index():
     '''View function'''
 
-    invites = Token.query.all()
+    invitations = Token.query.all()
 
-    return render_template('account/invitation_index.html', invites=invites)
+    return render_template('account/invitation_index.html', invitations=invitations)
 
 
 @BLUEPRINT.route('/invitation/new', methods=('GET', 'POST'))

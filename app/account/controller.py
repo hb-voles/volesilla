@@ -1,14 +1,13 @@
 """Data model for user"""
 
-import uuid
 from urllib.parse import urljoin
-from datetime import datetime, timedelta
 from flask import current_app, session, render_template, url_for
 from flask_mail import Message
 
 from app.extensions import BCRYPT, DB, MAIL
 from app.account.model import User, Token
-from app.account.controller_token import verify_token_by_uid, cancel_token, create_reset_pasword_token
+from app.account.controller_token import verify_token_by_uid, cancel_token, \
+    create_registration_token, create_reset_pasword_token
 
 
 def authenticate(email, password):
@@ -65,75 +64,44 @@ def change_password(reset_password_token_uid, password):
     return False
 
 
-def create_invite_token(valid_until, created_by, for_user):
-    """Save invite_token into DB"""
+def create_account(password, email):
+    """
+    Create new account.
 
-    # TODO prepsat pres create_token
-    invite = Token(
-        token=uuid.uuid4().hex,
-        valid_until=valid_until,
-        created_by=created_by,
-        for_user=for_user)
-
-    DB.session.add(invite)
-    DB.session.commit()
-
-
-def validate_invite_token(invite_token):
-    """Return True if invite token is valid else False"""
-
-    invite = Token.query.filter_by(token=invite_token).first()
-
-    if invite:
-        return (invite.valid_until > datetime.now()) and invite.active
-
-    return False
-
-
-def create_account(username, password, email, invite_token, confirmed_at):
-    """Create new user account"""
-
-    token = Token.query.filter_by(token=invite_token).first()
-    token.active = False
+    :param password: Password.
+    :param email: e-mail
+    :return: user
+    """
 
     user = User(
-        username=username,
         password=BCRYPT.generate_password_hash(password),
         email=email,
-        confirmed_at=confirmed_at,
-        active=True)
+        confirmed_at=None,
+        gdpr_version=current_app.config['GDPR_VERSION'],
+        is_active=False)
 
     try:
-        DB.session.add(token)
         DB.session.add(user)
         DB.session.commit()
     except Exception as e:
         current_app.logger.error('Write new account into DB fails!')
 
+    return user
 
-def send_confirmation_mail(email):
+
+def send_registration_mail(user):
     """Send confirmation of registration"""
 
-    registration = RegistrationToken(
-        token=uuid.uuid4().hex,
-        created=datetime.now(),
-        valid_until=datetime.now() + timedelta(hours=2),
-    )
-
-    try:
-        DB.session.add(registration)
-        DB.session.commit()
-    except Exception as e:
-        current_app.logger.error('Write new registration token into DB fails!')
+    registration_token = create_registration_token(user.uid)
 
     link = urljoin(
         current_app.config['HOME_URL'],
-        url_for('account.registration_confirmation_final', token=registration.token)
+        url_for('account.registration_confirmation_final', token_uid=registration_token.uid.hex)
     )
 
     msg = Message()
     msg.sender = 'Hell-Bent VoleS <{}>'.format(current_app.config['MAIL_USERNAME'])
-    msg.add_recipient(email)
+    msg.add_recipient(user.email)
     msg.subject = '[voles.cz] Confirmation of Registration'
     msg.body = render_template(
         'account/registration_confirmation.plain.mail',
