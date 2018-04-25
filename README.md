@@ -89,7 +89,7 @@ See:
 
     sudo docker container list
 
-    sudo tail /srv/volesilla/data/volesilla.log
+    sudo tail -f /srv/volesilla/data/volesilla.log
     sudo sqlite3  /srv/volesilla/data/volesilla.db
 
 ### Docker debbug
