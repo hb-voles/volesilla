@@ -2,7 +2,9 @@
 """Extensions module. Each extension is initialized in the app factory located in app.py."""
 
 import uuid
-from sqlalchemy import types
+
+from sqlalchemy.types import TypeDecorator, CHAR
+from sqlalchemy.dialects.postgresql import UUID as postgreUUID
 
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
@@ -11,29 +13,45 @@ from flask_bootstrap import Bootstrap
 from flask_wtf.csrf import CSRFProtect
 
 
-class UUID(types.TypeDecorator):  # pylint: disable=abstract-method
-    '''UUID for SQLite'''
+class UUID(TypeDecorator):  # pylint: disable=abstract-method
+    """Platform-independent UUID type.
 
-    impl = types.Binary
+    Uses PostgreSQL's UUID type, otherwise uses
+    CHAR(32), storing as stringified hex values.
 
-    def __init__(self):
-        self.impl.length = 16
-        types.TypeDecorator.__init__(self, length=self.impl.length)
+    """
+    impl = CHAR
 
-    def process_bind_param(self, value, dialect=None):
-        if value and isinstance(value, uuid.UUID):
-            return value.bytes
-        elif value and not isinstance(value, uuid.UUID):
-            raise ValueError('value {} is not a valid uuid.UUID'.format(value))
+    def load_dialect_impl(self, dialect):
+        if dialect.name == 'postgresql':
+            dialect_type = dialect.type_descriptor(postgreUUID())
         else:
-            return None
+            dialect_type = dialect.type_descriptor(CHAR(32))
 
-    def process_result_value(self, value, dialect=None):
-        return uuid.UUID(bytes=value) if value else None
+        return dialect_type
 
-    def is_mutable(self):  # pylint: disable=no-self-use
-        '''is_mutable'''
-        return False
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            result = value
+        elif dialect.name == 'postgresql':
+            result = str(value)
+        else:
+            if not isinstance(value, uuid.UUID):
+                result = "%.32x" % uuid.UUID(value).int
+            else:
+                # hexstring
+                result = "%.32x" % value.int
+
+        return result
+
+    def process_result_value(self, value, dialect):
+        if value is None:
+            result = value
+        else:
+            if not isinstance(value, uuid.UUID):
+                result = uuid.UUID(value)
+
+        return result
 
 
 BCRYPT = Bcrypt()
