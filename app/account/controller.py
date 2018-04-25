@@ -43,7 +43,10 @@ def authenticate(email, password):
 def search_user_by_email(email):
     """Search user by e-mail"""
 
-    user = User.query.filter_by(email=email).first()
+    try:
+        user = User.query.filter_by(email=email).first()
+    except Exception as error:  # pylint: disable=broad-except,unused-variable
+        current_app.logger.error('Function search_user_by_email failed!')
 
     return user if user else None
 
