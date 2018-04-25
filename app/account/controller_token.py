@@ -3,7 +3,7 @@
 from datetime import datetime, timedelta
 
 from app.extensions import DB
-from app.account.model import Token
+from app.account.model import Token, TokenType
 
 
 def create_token(token_type, valid_period, user_uid, note=''):
@@ -31,29 +31,34 @@ def create_token(token_type, valid_period, user_uid, note=''):
     return token
 
 
-def verify_token(token):
+def verify_token(token, token_type):
     """
     Verify token.
 
     :param token: Token which we would like to verify.
+    :param token_type: Type of token (TokenType).
     :return: True if token is valid else False.
     """
 
-    return (token.created_at < datetime.now()) and (
-        datetime.now() < token.valid_until) and token.is_active
+    return \
+        (token.created_at < datetime.now()) and \
+        (datetime.now() < token.valid_until) and \
+        (token.token_type == token_type.value) and \
+        token.is_active
 
 
-def verify_token_by_uid(token_uid):
+def verify_token_by_uid(token_uid, token_type):
     """
     Verify token by uid.
 
     :param token_uid: Token which we would like to verify.
+    :param token_type: Type of token (TokenType).
     :return: True if token is valid else False
     """
 
     token = Token.query.filter_by(uid=token_uid).first()
 
-    return verify_token(token) if token else False
+    return verify_token(token, token_type) if token else False
 
 
 def cancel_token(token):
@@ -79,7 +84,7 @@ def create_invitation_token(user_uid, note_for_whom):
     """
 
     return create_token(
-        token_type=Token.TokenType.INVITATION.value,
+        token_type=TokenType.INVITATION.value,
         valid_period=timedelta(days=2),
         user_uid=user_uid,
         note=note_for_whom
@@ -95,7 +100,7 @@ def create_registration_token(user_uid):
     """
 
     return create_token(
-        token_type=Token.TokenType.REGISTRATION.value,
+        token_type=TokenType.REGISTRATION.value,
         valid_period=timedelta(hours=1),
         user_uid=user_uid
     )
@@ -110,7 +115,7 @@ def create_reset_pasword_token(user_uid):
     """
 
     return create_token(
-        token_type=Token.TokenType.RESET_PASSWORD.value,
+        token_type=TokenType.RESET_PASSWORD.value,
         valid_period=timedelta(hours=1),
         user_uid=user_uid
     )

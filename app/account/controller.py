@@ -5,7 +5,7 @@ from flask import current_app, session, render_template, url_for
 from flask_mail import Message
 
 from app.extensions import BCRYPT, DB, MAIL
-from app.account.model import User, Token
+from app.account.model import User, Token, TokenType
 from app.account.controller_token import verify_token_by_uid, cancel_token, \
     create_registration_token, create_reset_pasword_token
 
@@ -49,7 +49,7 @@ def change_password(reset_password_token_uid, password):
 
     token = Token.query.filter_by(uid=reset_password_token_uid).first()
 
-    if verify_token_by_uid(reset_password_token_uid):
+    if verify_token_by_uid(reset_password_token_uid, TokenType.RESET_PASSWORD):
 
         user = token.user
         user.password = BCRYPT.generate_password_hash(password)
