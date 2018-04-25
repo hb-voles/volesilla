@@ -12,7 +12,9 @@ from wtforms.validators import DataRequired
 from app.auth import login_required
 from app.account.model import Token
 from app.account.controller import authenticate, create_invite_token, \
-    validate_invite_token, create_account, send_confirmation_mail
+    validate_invite_token, create_account, send_confirmation_mail, \
+    search_user_by_email, send_reset_password_mail, change_password
+from app.account.controller_token import verify_token_by_uid, create_invitation_token, create_reset_pasword_token
 
 
 BLUEPRINT = Blueprint('account', __name__, template_folder='templates')
@@ -71,6 +73,55 @@ def login():
         next=target)
 
 
+@BLUEPRINT.route('/password/forgotten', methods=('GET', 'POST'))
+def forgotten_password():
+    """Forgotten password"""
+
+    form = ForgottenPasswordForm()
+
+    if form.validate_on_submit():
+
+        user = search_user_by_email(form.email.data)
+        if not user:
+            form.email.errors.append('Given e-mail isn\'t registered', 'errorr')
+
+        if not form.errors:
+            token = create_reset_pasword_token(user.uid)
+            send_reset_password_mail(form.email.data, token)
+
+            return render_template(
+                'account/forgotten_password_confirmation.html',
+                mail=form.email.data)
+
+    if form.errors:
+        flash('Forgotten Password form isn\'t filled correctly!', 'error')
+
+    return render_template('account/forgotten_password.html', form=form)
+
+
+@BLUEPRINT.route('/password/reset/<token>', methods=('GET', 'POST'))
+def reset_password(token):
+    """Reset password form"""
+
+    form = ResetPasswordForm()
+
+    if form.validate_on_submit():
+
+        if form.password1.data != form.password2.data:
+            form.password1.errors.append(
+                '<strong>Passwords</strong> should have the same value!'
+            )
+
+        if not form.errors:
+            change_password(token, form.password1.data)
+            return render_template('account/reset_password_confirmation.html')
+
+    if form.errors:
+        flash('Registration form isn\'t filled correctly!', 'error')
+
+    return render_template('account/reset_password.html', form=form, reset_password_token=token)
+
+
 @BLUEPRINT.route('/logout')
 def logout():
     '''View function'''
@@ -118,6 +169,17 @@ def registration():
     return render_template('account/registration.html', form=form)
 
 
+@BLUEPRINT.route('/registration/final/<token_uid>')
+def registration_confirmation_final(token_uid):
+    '''View function'''
+
+    if not verify_token_by_uid(token_uid):
+        pass
+
+    # TODO: Potvrdit a dokoncit user v DB, zinvalidnit token, nebo rict NE
+    return render_template('account/registration_confirmation.html', mail='DONE')
+
+
 @BLUEPRINT.route('/invitation')
 @login_required
 def invitation_index():
@@ -137,11 +199,11 @@ def invitation_new():
         form = InvitationForm(created_by=session['username'])
 
         if form.validate_on_submit():
-            create_invite_token(
-                valid_until=datetime.now() + timedelta(days=2),
-                created_by=session['username'],
-                for_user=form.for_user.data
-            )
+            # TODO: There should be something like search_user_by_current_access_token
+            user = search_user_by_email(session['username'])
+            # TODO: This token should be send to next page and say: HEY, send this to your friend.
+            token = create_invitation_token(user.uid, form.for_user.data)
+
             return redirect(url_for('account.invitation_index'))
 
     return render_template('account/invitation_new.html', form=form)

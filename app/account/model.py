@@ -23,11 +23,12 @@ class Token(DB.Model):
     class TokenType(Enum):
         '''Type of tokens'''
 
-        INVITE = 1
+        INVITATION = 1
         CONFIRM_REGISTRATION = 2
         FINAL_REGISTRATION = 3
+        RESET_PASSWORD = 4
 
-    token = DB.Column(UUID, primary_key=True, default=uuid.uuid4)
+    uid = DB.Column(UUID, primary_key=True, default=uuid.uuid4)
     token_type = DB.Column(DB.Integer, nullable=False)
     created_at = DB.Column(DB.DateTime(), nullable=False)
     valid_until = DB.Column(DB.DateTime(), nullable=False)
@@ -38,4 +39,4 @@ class Token(DB.Model):
     user = DB.relationship('User', back_populates='tokens')
 
 
-User.tokens = DB.relationship('Token', order_by=Token.token, back_populates='user')
+User.tokens = DB.relationship('Token', order_by=Token.created_at, back_populates='user')
