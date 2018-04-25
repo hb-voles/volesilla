@@ -8,7 +8,7 @@ from flask_mail import Message
 
 from app.extensions import BCRYPT, DB, MAIL
 from app.account.model import User, Token, TokenType
-from app.account.controller_token import verify_token_by_uid, cancel_token, \
+from app.account.controller_token import verify_token_by_uid, \
     create_registration_token, create_reset_password_token, create_access_token, \
     create_renew_access_token
 
@@ -67,8 +67,6 @@ def change_password(reset_password_token_uid, password):
         DB.session.add(user)
         DB.session.commit()
 
-        cancel_token(token)
-
         return True
 
     return False
@@ -106,8 +104,8 @@ def confirm_and_activate_account(user):
     :param user: User
     """
 
-    user.confirmed_at=datetime.now()
-    user.is_active=True
+    user.confirmed_at = datetime.now()
+    user.is_active = True
 
     try:
         DB.session.add(user)

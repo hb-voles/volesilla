@@ -128,11 +128,12 @@ def reset_password(token_uid):
             )
 
         if not form.errors:
-            password_chnaged = change_password(token_uid, form.password1.data)
+            password_changed = change_password(token_uid, form.password1.data)
             user = search_user_by_token_uid(token_uid)
             confirm_and_activate_account(user)
+            cancel_token_by_uid(token_uid)
 
-            return render_template('account/reset_password_confirmation.html', result=password_chnaged)
+            return render_template('account/reset_password_final.html', result=password_changed)
 
     if form.errors:
         flash('Registration form isn\'t filled correctly!', 'error')
@@ -235,6 +236,6 @@ def invitation_new():
 
         if form.validate_on_submit():
             token = create_invitation_token(user.uid, form.for_user.data)
-            return render_template('account/invitation_final.html', invitation=token.uid.hex)
+            return render_template('account/invitation_final.html', invitation_token=token.uid.hex)
 
     return render_template('account/invitation_new.html', form=form)

@@ -67,6 +67,8 @@ See:
     sudo docker container stop volesilla
     sudo docker container rm volesilla
 
+    # sudo rm /srv/volesilla/data/*
+
     sudo docker run \
         -d --name volesilla \
         -v /srv/volesilla/data:/app/data \
@@ -86,6 +88,9 @@ See:
         celestian/volessila_${VLS_COMMIT_HASH}
 
     sudo docker container list
+
+    sudo tail /srv/volesilla/data/volesilla.log
+    sudo sqlite3  /srv/volesilla/data/volesilla.db
 
 ### Docker debbug
 
