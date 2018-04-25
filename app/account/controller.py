@@ -106,9 +106,8 @@ def confirm_and_activate_account(user):
     :param user: User
     """
 
-    user = User(
-        confirmed_at=datetime.now(),
-        is_active=True)
+    user.confirmed_at=datetime.now()
+    user.is_active=True
 
     try:
         DB.session.add(user)

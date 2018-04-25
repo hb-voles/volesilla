@@ -128,9 +128,11 @@ def reset_password(token_uid):
             )
 
         if not form.errors:
-            # Todo: change password return True or False
-            change_password(token_uid, form.password1.data)
-            return render_template('account/reset_password_confirmation.html')
+            password_chnaged = change_password(token_uid, form.password1.data)
+            user = search_user_by_token_uid(token_uid)
+            confirm_and_activate_account(user)
+
+            return render_template('account/reset_password_confirmation.html', result=password_chnaged)
 
     if form.errors:
         flash('Registration form isn\'t filled correctly!', 'error')
