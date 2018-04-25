@@ -2,7 +2,9 @@
 
 from functools import wraps
 
-from flask import request, redirect, session, url_for
+from flask import request, redirect, url_for
+
+from app.account.controller_token import verify_authentication
 
 
 def login_required(func):
@@ -16,7 +18,7 @@ def login_required(func):
         Switch between requested page and login form
         '''
 
-        if 'username' not in session:
+        if not verify_authentication():
             return redirect(url_for('account.login', next=request.url))
         return func(*args, **kwargs)
 

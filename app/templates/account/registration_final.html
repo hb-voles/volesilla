@@ -1,0 +1,33 @@
+{% extends "common/page_base.html" %}
+
+{% if result==True %}
+
+    {% block title %}
+    Successful Registration
+    {% endblock %}
+
+    {% block content %}
+
+        <p class="lead">You're registered now!</p>
+
+        Please, fill your <a href="{{ url_for('/') }}">your profile</a> (jeste neni hotovo)
+
+    {% endblock %}
+
+{% endif %}
+
+{% if result==False %}
+
+    {% block title %}
+    Registration Failed
+    {% endblock %}
+
+    {% block content %}
+
+        <p class="lead">Your Token was outdated!</p>
+
+        Please, ask your <strong>Hell-Bent VoleS</strong>strong> contact for the new invitation.
+
+    {% endblock %}
+
+{% endif %}

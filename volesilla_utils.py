@@ -16,10 +16,9 @@ from flask.helpers import get_debug_flag
 
 from app.app import create_app
 from app.settings import DevConfig, ProdConfig
-from app.extensions import DB
+from app.extensions import DB, BCRYPT
 
-from app.extensions import BCRYPT
-from app.account.model import User, Token
+from app.account.model import User
 
 
 def main():

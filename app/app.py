@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
 
-from flask import Flask, session
+from flask import Flask
 from flask_bootstrap import WebCDN
 
 from app.settings import ProdConfig
@@ -11,6 +11,8 @@ from app.navbar import build_navbar
 
 from app import account
 from app import voles
+
+from app.account.controller_token import verify_authentication
 
 
 def create_app(config_object=ProdConfig):
@@ -76,10 +78,7 @@ def register_context_processots(app):
     @app.context_processor
     def is_authenticated():  # pylint: disable=unused-variable
         '''Tell if user is authenticated'''
-        def authenticated():
-            '''Tell if user is authenticated'''
-            return True if 'username' in session else False
-        return dict(is_authenticated=authenticated)
+        return dict(is_authenticated=verify_authentication)
 
     @app.context_processor
     def inject_footer_variables():  # pylint: disable=unused-variable

@@ -11,9 +11,10 @@ from wtforms.validators import DataRequired
 
 from app.auth import login_required
 from app.account.model import Token, TokenType
-from app.account.controller import authenticate, create_account, \
+from app.account.controller import authenticate, create_account, confirm_and_activate_account, \
     send_registration_mail, search_user_by_email, send_reset_password_mail, change_password
-from app.account.controller_token import verify_token_by_uid, create_invitation_token
+from app.account.controller_token import cancel_token_by_uid, verify_token_by_uid, \
+    create_invitation_token, search_user_by_token_uid
 
 
 BLUEPRINT = Blueprint('account', __name__, template_folder='templates')
@@ -78,8 +79,9 @@ def login():
 
     form = LoginForm()
 
-    if form.validate_on_submit() and authenticate(form.email.data, form.password.data):
-        return redirect(target)
+    if form.validate_on_submit():
+        if authenticate(form.email.data, form.password.data):
+            return redirect(target)
 
     return render_template(
         'account/login.html',
@@ -140,7 +142,15 @@ def reset_password(token_uid):
 def logout():
     '''View function'''
 
-    session.pop('username', None)
+    if 'access_token' in session:
+        cancel_token_by_uid(session['access_token'])
+    if 'renew_access_token' in session:
+        cancel_token_by_uid(session['renew_access_token'])
+
+    session.pop('access_token', None)
+    session.pop('renew_access_token', None)
+    session.pop('user_email', None)
+
     return redirect(url_for('voles.index'))
 
 
@@ -175,7 +185,6 @@ def registration():
 
             send_registration_mail(user)
 
-            # TODO: Tady to chce speacial stránku, přihlásit a nechat vyplnit profil.
             return render_template('account/registration_confirmation.html', mail=form.email.data)
 
     if form.errors:
@@ -189,14 +198,17 @@ def registration():
 
 
 @BLUEPRINT.route('/registration/final/<token_uid>')
-def registration_confirmation_final(token_uid):
+def registration_final(token_uid):
     '''View function'''
 
     if not verify_token_by_uid(token_uid, TokenType.REGISTRATION):
-        pass
+        user = search_user_by_token_uid(token_uid)
+        confirm_and_activate_account(user)
 
-    # TODO: Potvrdit a dokoncit user v DB, zinvalidnit token, nebo rict NE
-    return render_template('account/registration_confirmation.html', mail='DONE')
+        # >>> Udelat profile
+        return render_template('account/registration_final.html', result=True)
+
+    return render_template('account/registration_final.html', result=False)
 
 
 @BLUEPRINT.route('/invitation')
@@ -215,14 +227,12 @@ def invitation_new():
     '''View function'''
 
     with current_app.app_context():
-        form = InvitationForm(created_by=session['username'])
+        user = search_user_by_token_uid(session['access_token'])
+
+        form = InvitationForm(created_by=user.email)
 
         if form.validate_on_submit():
-            # TODO: There should be something like search_user_by_current_access_token
-            user = search_user_by_email(session['username'])
-            # TODO: This token should be send to next page and say: HEY, send this to your friend.
             token = create_invitation_token(user.uid, form.for_user.data)
-
-            return redirect(url_for('account.invitation_index'))
+            return render_template('account/invitation_final.html', invitation=token.uid.hex)
 
     return render_template('account/invitation_new.html', form=form)

@@ -2,6 +2,8 @@
 
 from datetime import datetime, timedelta
 
+from flask import session
+
 from app.extensions import DB
 from app.account.model import Token, TokenType
 
@@ -29,6 +31,29 @@ def create_token(token_type, valid_period, user_uid, note=''):
     DB.session.commit()
 
     return token
+
+
+def cancel_token(token):
+    """
+    Cancel the token.
+
+    :param token: Token which we would like to cancel
+    """
+
+    token.is_active = False
+
+    DB.session.add(token)
+    DB.session.commit()
+
+
+def cancel_token_by_uid(token_uid):
+    """
+    Cancel token by given token_uid.
+    :param token_uid: Given uid.
+    """
+
+    token = Token.query.filter_by(uid=token_uid).first()
+    cancel_token(token)
 
 
 def verify_token(token, token_type):
@@ -59,19 +84,6 @@ def verify_token_by_uid(token_uid, token_type):
     token = Token.query.filter_by(uid=token_uid).first()
 
     return verify_token(token, token_type) if token else False
-
-
-def cancel_token(token):
-    """
-    Cancel the token.
-
-    :param token: Token which we would like to cancel
-    """
-
-    token.is_active = False
-
-    DB.session.add(token)
-    DB.session.commit()
 
 
 def create_invitation_token(user_uid, note_for_whom):
@@ -106,7 +118,7 @@ def create_registration_token(user_uid):
     )
 
 
-def create_reset_pasword_token(user_uid):
+def create_reset_password_token(user_uid):
     """
     Create new reset-password token.
 
@@ -119,3 +131,83 @@ def create_reset_pasword_token(user_uid):
         valid_period=timedelta(hours=1),
         user_uid=user_uid
     )
+
+
+def create_access_token(user_uid):
+    """
+    Create new access token.
+
+    :param user_uid: User for whom we would like to grant access.
+    :return: Newly created access token.
+    """
+
+    return create_token(
+        token_type=TokenType.ACCESS.value,
+        valid_period=timedelta(hours=1),
+        user_uid=user_uid
+    )
+
+
+def create_renew_access_token(user_uid):
+    """
+    Create new renew-access token.
+
+    :param user_uid: User for whom we would like to create renew-access token.
+    :return: Newly created renew-access token.
+    """
+
+    return create_token(
+        token_type=TokenType.RENEW_ACCESS.value,
+        valid_period=timedelta(days=2),
+        user_uid=user_uid
+    )
+
+
+def search_user_by_token_uid(token_uid):
+    """
+    Search user connected to token
+
+    :param token_uid: Token uid.
+    :return: User if exists and token is active else None
+    """
+
+    token = Token.query.filter_by(uid=token_uid).first()
+    if token:
+        return token.user if token.is_active else None
+
+    return None
+
+
+def verify_authentication():
+    """
+    Verifies if user is authenticated (via session)
+
+    :return: True if authenticated else False
+    """
+
+    if 'access_token' not in session:
+        return False
+
+    access_token_uid = session['access_token']
+    if verify_token_by_uid(access_token_uid, TokenType.ACCESS):
+        return True
+
+    if 'renew_access_token' not in session:
+        return False
+
+    renew_access_token_uid = session['renew_access_token']
+    if verify_token_by_uid(renew_access_token_uid, TokenType.RENEW_ACCESS):
+
+        user = search_user_by_token_uid(renew_access_token_uid)
+
+        cancel_token_by_uid(renew_access_token_uid)
+
+        access_token = create_access_token(user.uid)
+        renew_access_token = create_renew_access_token(user.uid)
+
+        session['access_token'] = access_token.uid.hex
+        session['renew_access_token'] = renew_access_token.uid.hex
+
+        return True
+
+    return False
