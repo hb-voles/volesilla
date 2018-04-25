@@ -8,4 +8,5 @@ uwsgi \
     --callable app \
     --master \
     --processes 5 \
+    --logto /app/data/volesilla.log \
     --pidfile /tmp/volesilla.pid
