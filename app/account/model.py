@@ -24,6 +24,8 @@ class TokenType(Enum):
     INVITATION = 1
     REGISTRATION = 2
     RESET_PASSWORD = 3
+    ACCESS = 4
+    RENEW_ACCESS = 5
 
 
 class Token(DB.Model):

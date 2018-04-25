@@ -1,13 +1,16 @@
 """Data model for user"""
 
+from datetime import datetime
 from urllib.parse import urljoin
+
 from flask import current_app, session, render_template, url_for
 from flask_mail import Message
 
 from app.extensions import BCRYPT, DB, MAIL
 from app.account.model import User, Token, TokenType
 from app.account.controller_token import verify_token_by_uid, cancel_token, \
-    create_registration_token, create_reset_pasword_token
+    create_registration_token, create_reset_password_token, create_access_token, \
+    create_renew_access_token
 
 
 def authenticate(email, password):
@@ -20,12 +23,19 @@ def authenticate(email, password):
     if not user:
         return False
 
-    authenticated = BCRYPT.check_password_hash(user.password, password)
-    if not authenticated:
+    if not user.is_active:
         return False
 
-    # TODO Fix it according to issue #20
-    session['username'] = email
+    is_password_correct = BCRYPT.check_password_hash(user.password, password)
+    if not is_password_correct:
+        return False
+
+    access_token = create_access_token(user.uid)
+    renew_access_token = create_renew_access_token(user.uid)
+
+    session['access_token'] = access_token.uid.hex
+    session['renew_access_token'] = renew_access_token.uid.hex
+    session['user_email'] = user.email
 
     return True
 
@@ -83,10 +93,28 @@ def create_account(password, email):
     try:
         DB.session.add(user)
         DB.session.commit()
-    except Exception as e:
+    except Exception as errorr:  # pylint: disable=broad-except,unused-variable
         current_app.logger.error('Write new account into DB fails!')
 
     return user
+
+
+def confirm_and_activate_account(user):
+    """
+    Confirm and activate account
+
+    :param user: User
+    """
+
+    user = User(
+        confirmed_at=datetime.now(),
+        is_active=True)
+
+    try:
+        DB.session.add(user)
+        DB.session.commit()
+    except Exception as errorr:  # pylint: disable=broad-except,unused-variable
+        current_app.logger.error('Account confirmation and activation fails!')
 
 
 def send_registration_mail(user):
@@ -96,7 +124,7 @@ def send_registration_mail(user):
 
     link = urljoin(
         current_app.config['HOME_URL'],
-        url_for('account.registration_confirmation_final', token_uid=registration_token.uid.hex)
+        url_for('account.registration_final', token_uid=registration_token.uid.hex)
     )
 
     msg = Message()
@@ -117,7 +145,7 @@ def send_reset_password_mail(user):
     :param user: User whom will receive mail with link to reset password
     """
 
-    token = create_reset_pasword_token(user.uid)
+    token = create_reset_password_token(user.uid)
 
     link = urljoin(
         current_app.config['HOME_URL'],
