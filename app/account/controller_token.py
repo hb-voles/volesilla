@@ -51,7 +51,7 @@ def verify_token_by_uid(token_uid):
     :return: True if token is valid else False
     """
 
-    token = Token.query.filter_by(token=token_uid).first()
+    token = Token.query.filter_by(uid=token_uid).first()
 
     return verify_token(token) if token else False
 

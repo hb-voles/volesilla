@@ -11,10 +11,9 @@ from wtforms.validators import DataRequired
 
 from app.auth import login_required
 from app.account.model import Token
-from app.account.controller import authenticate, create_invite_token, \
-    validate_invite_token, create_account, send_confirmation_mail, \
-    search_user_by_email, send_reset_password_mail, change_password
-from app.account.controller_token import verify_token_by_uid, create_invitation_token, create_reset_pasword_token
+from app.account.controller import authenticate, validate_invite_token, create_account, \
+    send_confirmation_mail, search_user_by_email, send_reset_password_mail, change_password
+from app.account.controller_token import verify_token_by_uid, create_invitation_token
 
 
 BLUEPRINT = Blueprint('account', __name__, template_folder='templates')
@@ -35,8 +34,23 @@ class RegistrationForm(FlaskForm):
 class LoginForm(FlaskForm):
     '''Login form'''
 
-    username = StringField('username', validators=[DataRequired()])
+    email = StringField('e-mail', validators=[DataRequired()])
     password = PasswordField('password', validators=[DataRequired()])
+    recaptcha = RecaptchaField()
+
+
+class ForgottenPasswordForm(FlaskForm):
+    '''Forgotten Password form'''
+
+    email = StringField('e-mail', validators=[DataRequired()])
+    recaptcha = RecaptchaField()
+
+
+class ResetPasswordForm(FlaskForm):
+    '''Forgotten Password form'''
+
+    password1 = PasswordField('new password', validators=[DataRequired()])
+    password2 = PasswordField('new password again', validators=[DataRequired()])
     recaptcha = RecaptchaField()
 
 
@@ -64,7 +78,7 @@ def login():
 
     form = LoginForm()
 
-    if form.validate_on_submit() and authenticate(form.username.data, form.password.data):
+    if form.validate_on_submit() and authenticate(form.email.data, form.password.data):
         return redirect(target)
 
     return render_template(
@@ -86,8 +100,7 @@ def forgotten_password():
             form.email.errors.append('Given e-mail isn\'t registered', 'errorr')
 
         if not form.errors:
-            token = create_reset_pasword_token(user.uid)
-            send_reset_password_mail(form.email.data, token)
+            send_reset_password_mail(user)
 
             return render_template(
                 'account/forgotten_password_confirmation.html',
@@ -99,8 +112,8 @@ def forgotten_password():
     return render_template('account/forgotten_password.html', form=form)
 
 
-@BLUEPRINT.route('/password/reset/<token>', methods=('GET', 'POST'))
-def reset_password(token):
+@BLUEPRINT.route('/password/reset/<token_uid>', methods=('GET', 'POST'))
+def reset_password(token_uid):
     """Reset password form"""
 
     form = ResetPasswordForm()
@@ -113,13 +126,14 @@ def reset_password(token):
             )
 
         if not form.errors:
-            change_password(token, form.password1.data)
+            # Todo: change password return True or False
+            change_password(token_uid, form.password1.data)
             return render_template('account/reset_password_confirmation.html')
 
     if form.errors:
         flash('Registration form isn\'t filled correctly!', 'error')
 
-    return render_template('account/reset_password.html', form=form, reset_password_token=token)
+    return render_template('account/reset_password.html', form=form, reset_password_token=token_uid)
 
 
 @BLUEPRINT.route('/logout')
@@ -161,7 +175,10 @@ def registration():
                 invite_token=form.token.data,
                 confirmed_at=datetime.now()
             )
-            return redirect(url_for('voles.index'))
+
+            send_confirmation_mail(form.email.data)
+
+            return render_template('account/registration_confirmation.html', mail=form.email.data)
 
     if form.errors:
         flash('Registration form isn\'t filled correctly!', 'error')
