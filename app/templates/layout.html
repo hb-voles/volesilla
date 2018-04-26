@@ -11,6 +11,14 @@
         <link href="{{ bootstrap_find_resource('superhero/bootstrap.css', cdn='bootswatchcdn') }}" rel="stylesheet">
         <link href="{{ url_for('static', filename='css/sticky-footer-navbar.css') }}" rel="stylesheet" >
 
+
+        <style>
+        body {
+            background-image: url("{{ url_for('static', filename='cool-blue.jpg') }}");
+            background-attachment: fixed;
+        }
+        </style>
+
         {% import "bootstrap/fixes.html" as fixes %}
         {{fixes.ie8()}}
 
@@ -86,10 +94,10 @@
     <footer class="footer">
         <div class="container">
             <p class="text-muted">
-                &copy; 2018 VoleS |
+                <small>&copy; 2018 VoleS |
                 <a href="https://github.com/hb-voles/volesilla">volesilla</a> |
                 <a href="http://www.bootlint.com/?url=https://voles.celestian.cz">bootlint</a> |
-                c: {{ commit_hash }} | d: {{ deploy_ts }}
+                    c: {{ commit_hash }} | d: {{ deploy_ts }}</small>
             </p>
         </div>
     </footer>
