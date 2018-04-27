@@ -3,6 +3,7 @@
 import os
 import shutil
 import tempfile
+import subprocess
 
 
 def before_all(context):
@@ -11,8 +12,6 @@ def before_all(context):
     context.main_test_dir = tempfile.mkdtemp(prefix='vls_behave-')
 
     context.base_wd = os.getcwd()
-    # context.base_config_file = os.path.join(context.base_wd, 'zonkylla.conf')
-    context.cli_options = ''
 
 
 def after_all(context):
@@ -46,7 +45,6 @@ def before_scenario(context, scenario):
     if not os.path.exists(context.scenario_test_dir):
         os.makedirs(context.scenario_test_dir)
 
-    # context.scenario_config_file = os.path.join(context.scenario_test_dir, 'zonkylla.conf')
-    # shutil.copyfile(context.base_config_file, context.scenario_config_file)
-
+    subprocess.check_call(['python', 'volesilla_utils.py', 'db_init', '-t',
+                           context.scenario_test_dir, 'volesilla_test.db'])
     os.chdir(context.scenario_test_dir)

@@ -13,7 +13,10 @@ from app.settings import TestConfig
 def step_impl(context):  # pylint: disable=unused-argument
     """Create client"""
 
-    app = create_app(config_object=TestConfig)  # pylint: disable=invalid-name
+    config = TestConfig
+    config.PROJECT_ROOT = context.scenario_test_dir
+
+    app = create_app(config_object=config)  # pylint: disable=invalid-name
     context.client = app.test_client()
 
 
