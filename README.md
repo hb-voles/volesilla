@@ -22,6 +22,17 @@ Development
 
     deactivate
 
+Testing
+-------
+
+We use `behave` for testing.
+
+    # run test
+    tox -e py36-behave
+
+    # run with keeping the test directory
+    VLS_BEHAVE_DEBUG=1 tox -e py36-behave
+
 Deploy
 ------
 
@@ -99,11 +110,6 @@ See:
     # Locally on server if you need work with le-companion:
     sudo docker exec le-companion /app/cert_status
     sudo docker exec le-companion /app/force_renew
-
-Testing
--------
-
-There no tests, only pep8 and pylint checks.
 
 Source
 ------
