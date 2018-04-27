@@ -49,6 +49,7 @@ class ProdConfig(Config):
 
     ENV = 'production_env'
     DEBUG = False
+    TESTING = False
     BOOTSTRAP_USE_MINIFIED = True
 
     # Put the db file in project root
@@ -62,6 +63,21 @@ class DevConfig(Config):
 
     ENV = 'development_env'
     DEBUG = True
+    TESTING = False
+    BOOTSTRAP_USE_MINIFIED = False
+
+    # Put the db file in project root
+    DB_NAME = 'volesilla_dev.db'
+    DB_PATH = os.path.join(Config.PROJECT_ROOT, 'data', DB_NAME)
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_PATH)
+
+
+class TestConfig(Config):
+    """Development configuration."""
+
+    ENV = 'development_env'
+    DEBUG = True
+    TESTING = True
     BOOTSTRAP_USE_MINIFIED = False
 
     # Put the db file in project root
