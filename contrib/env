@@ -2,7 +2,7 @@ export VIRTUAL_HOST='fqdn host domain'
 export LETSENCRYPT_HOST='fqdn host domain (same as VIRTUAL_HOST)'
 export LETSENCRYPT_EMAIL='web admin's e-mail'
 
-export VLS_APP_ADMIN_MAIL='Adminitrator's mail'
+export VLS_APP_ADMIN_MAIL='Administrator's mail'
 
 export VLS_BASE_URL='base url'
 
