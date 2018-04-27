@@ -81,6 +81,6 @@ class TestConfig(Config):
     BOOTSTRAP_USE_MINIFIED = False
 
     # Put the db file in project root
-    DB_NAME = 'volesilla_dev.db'
+    DB_NAME = 'volesilla_test.db'
     DB_PATH = os.path.join(Config.PROJECT_ROOT, 'data', DB_NAME)
     SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_PATH)

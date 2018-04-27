@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """volesilla_utils
 Usage:
-  volesilla_utils.py db_init <db_file>
+  volesilla_utils.py db_init [-t <testing_path>] <db_file>
   volesilla_utils.py (-h | --help)
 Options:
+  -t                Testing environment
   -h --help         Show this screen.
   db_file           <file> in schema sqlite:////PROJECT_ROOT/data/<file>
 """
@@ -15,7 +16,7 @@ from docopt import docopt
 from flask.helpers import get_debug_flag
 
 from app.app import create_app
-from app.settings import DevConfig, ProdConfig
+from app.settings import DevConfig, ProdConfig, TestConfig
 from app.extensions import DB, BCRYPT
 
 from app.account.model import User
@@ -28,7 +29,12 @@ def main():
 
     if args['db_init'] and args['<db_file>']:
 
-        config = DevConfig if get_debug_flag() else ProdConfig
+        if args['-t']:
+            config = TestConfig
+            config.PROJECT_ROOT = args['<testing_path>']
+
+        else:
+            config = DevConfig if get_debug_flag() else ProdConfig
 
         db_dir = os.path.join(config.PROJECT_ROOT, 'data')
         config.DB_NAME = args['<db_file>']
