@@ -44,13 +44,20 @@ def before_scenario(context, scenario):
     if not os.path.exists(context.scenario_test_dir):
         os.makedirs(context.scenario_test_dir)
 
+    context.vls = {}
+
 
 def after_scenario(context, scenario):  # pylint: disable=unused-argument
     """Cleanup after every scenario"""
 
-    # context.client.__exit__(None, None, None)
-    # context.session = None
-    # context.server.terminate()
-    # context.server.join()
+    if 'client' in context.vls:
+        context.vls['client'].__exit__(None, None, None)
 
-    pass
+    if 'session' in context.vls:
+        context.vls['session'] = None
+
+    if 'server' in context.vls:
+        context.vls['server'].terminate()
+        context.vls['server'].join()
+
+    del context.vls
