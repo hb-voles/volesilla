@@ -2,7 +2,7 @@
 
 source .tox/py36/bin/activate
 python volesilla_utils.py db_init volesilla.db
-python volesilla_utils.py db_set_user volesilla.db ${VLS_APP_ADMIN_MAIL}
+python volesilla_utils.py db_add_user volesilla.db ${VLS_APP_ADMIN_MAIL}
 uwsgi \
     --http 0.0.0.0:80 \
     --wsgi-file volesilla.py \

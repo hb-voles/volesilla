@@ -2,7 +2,7 @@
 """volesilla_utils
 Usage:
   volesilla_utils.py db_init <db_file>
-  volesilla_utils.py db_set_user <db_file> <admin_mail>
+  volesilla_utils.py db_add_user <db_file> <user_mail>
   volesilla_utils.py (-h | --help)
 Options:
   -t                Testing environment
@@ -55,7 +55,7 @@ def main():
         print('[SUCCESS] File [{}] created.'.format(config.DB_FILE))
         sys.exit(0)
 
-    if args['db_set_user']:
+    if args['db_add_user']:
 
         if not os.path.isfile(config.DB_FILE):
             print('[WARNING] File [{}] doesn\'t exist.'.format(config.DB_FILE))
@@ -67,7 +67,7 @@ def main():
             DB.init_app(app)
 
             admin = User(
-                email=args['<admin_mail>'],
+                email=args['<user_mail>'],
                 password=BCRYPT.generate_password_hash(uuid.uuid4().hex),
                 gdpr_version=config.GDPR_VERSION,
                 is_active=False
