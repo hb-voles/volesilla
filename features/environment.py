@@ -3,7 +3,6 @@
 import os
 import shutil
 import tempfile
-import subprocess
 
 
 def before_all(context):
@@ -45,6 +44,13 @@ def before_scenario(context, scenario):
     if not os.path.exists(context.scenario_test_dir):
         os.makedirs(context.scenario_test_dir)
 
-    subprocess.check_call(['python', 'volesilla_utils.py', 'db_init', '-t',
-                           context.scenario_test_dir, 'volesilla_test.db'])
-    os.chdir(context.scenario_test_dir)
+
+def after_scenario(context, scenario):  # pylint: disable=unused-argument
+    """Cleanup after every scenario"""
+
+    # context.client.__exit__(None, None, None)
+    # context.session = None
+    # context.server.terminate()
+    # context.server.join()
+
+    pass

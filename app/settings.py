@@ -43,6 +43,9 @@ class Config(object):
     COMMIT_HASH = os.environ.get('VLS_COMMIT_HASH', 'commit-hash')
     DEPLOY_TS = os.environ.get('VLS_DEPLOY_TS', 'deploy-ts')
 
+    DB_FILE = os.environ.get('VLS_DB_FILE', '')
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_FILE)
+
 
 class ProdConfig(Config):
     """Production configuration."""
@@ -51,10 +54,6 @@ class ProdConfig(Config):
     DEBUG = False
     TESTING = False
     BOOTSTRAP_USE_MINIFIED = True
-
-    DB_NAME = 'volesilla.db'
-    DB_PATH = os.path.join(Config.PROJECT_ROOT, 'data', DB_NAME)
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_PATH)
 
 
 class DevConfig(Config):
@@ -65,19 +64,14 @@ class DevConfig(Config):
     TESTING = False
     BOOTSTRAP_USE_MINIFIED = False
 
-    DB_NAME = 'volesilla_dev.db'
-    DB_PATH = os.path.join(Config.PROJECT_ROOT, 'data', DB_NAME)
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_PATH)
-
 
 class TestConfig(Config):
     """Development configuration."""
 
-    ENV = 'development_env'
+    ENV = 'testing_env'
     DEBUG = True
     TESTING = True
-    BOOTSTRAP_USE_MINIFIED = False
+    BOOTSTRAP_USE_MINIFIED = True
 
-    DB_NAME = 'volesilla_test.db'
-    DB_PATH = os.path.join(Config.PROJECT_ROOT, 'data', DB_NAME)
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_PATH)
+    SECRET_KEY = 'testing_secret_key'
+    APP_ADMIN_MAIL = 'admin@test.vls'
