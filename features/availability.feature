@@ -14,3 +14,8 @@ Feature: Availability
         Given we have vls running
         When we access "/logout"
         Then return status is "302"
+
+    Scenario: Forgotten is available
+        Given we have vls running
+        When we access "/password/forgotten"
+        Then return status is "200"
