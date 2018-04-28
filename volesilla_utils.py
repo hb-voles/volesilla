@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 """volesilla_utils
 Usage:
-  volesilla_utils.py db_init [-t <testing_path>] <db_file>
+  volesilla_utils.py db_init <db_file>
+  volesilla_utils.py db_set_user <db_file> <admin_mail>
   volesilla_utils.py (-h | --help)
 Options:
   -t                Testing environment
   -h --help         Show this screen.
-  db_file           <file> in schema sqlite:////PROJECT_ROOT/data/<file>
+  db_file           Absolute path to the DB file
 """
 
 import os
@@ -27,26 +28,23 @@ def main():
 
     args = docopt(__doc__)
 
-    if args['db_init'] and args['<db_file>']:
+    testing = os.environ.get('VLS_TESTING', 0)
+    if testing:
+        config = TestConfig
+    else:
+        config = DevConfig if get_debug_flag() else ProdConfig
 
-        if args['-t']:
-            config = TestConfig
-            config.PROJECT_ROOT = args['<testing_path>']
+    config.DB_FILE = args['<db_file>']
+    config.SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(config.DB_FILE)
 
-        else:
-            config = DevConfig if get_debug_flag() else ProdConfig
+    if args['db_init']:
 
-        db_dir = os.path.join(config.PROJECT_ROOT, 'data')
-        config.DB_NAME = args['<db_file>']
-        config.DB_PATH = os.path.join(db_dir, config.DB_NAME)
-        config.SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(config.DB_PATH)
-
-        if os.path.isfile(config.DB_PATH):
-            print('[WARNING] File [{}] already exists.'.format(config.DB_PATH))
+        if os.path.isfile(config.DB_FILE):
+            print('[WARNING] File [{}] already exists.'.format(config.DB_FILE))
             sys.exit(0)
 
-        if not os.path.exists(db_dir):
-            os.makedirs(db_dir)
+        if not os.path.exists(os.path.dirname(config.DB_FILE)):
+            os.makedirs(os.path.dirname(config.DB_FILE))
 
         app = create_app(config_object=config)
 
@@ -54,8 +52,22 @@ def main():
             DB.init_app(app)
             DB.create_all()
 
+        print('[SUCCESS] File [{}] created.'.format(config.DB_FILE))
+        sys.exit(0)
+
+    if args['db_set_user']:
+
+        if not os.path.isfile(config.DB_FILE):
+            print('[WARNING] File [{}] doesn\'t exist.'.format(config.DB_FILE))
+            sys.exit(1)
+
+        app = create_app(config_object=config)
+
+        with app.app_context():
+            DB.init_app(app)
+
             admin = User(
-                email=config.APP_ADMIN_MAIL,
+                email=args['<admin_mail>'],
                 password=BCRYPT.generate_password_hash(uuid.uuid4().hex),
                 gdpr_version=config.GDPR_VERSION,
                 is_active=False
@@ -64,7 +76,8 @@ def main():
             DB.session.add(admin)
             DB.session.commit()
 
-        print('[SUCCESS] File [{}] created.'.format(config.DB_PATH))
+        print(
+            '[SUCCESS] Admin user was set. For activation, you should reset password.')
         sys.exit(0)
 
 

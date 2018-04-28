@@ -12,6 +12,8 @@ export VLS_MAIL_PASSWORD='app password'
 export VLS_RECAPTCHA_PUBLIC_KEY='required a public key>'
 export VLS_RECAPTCHA_PRIVATE_KEY='required a private key'
 
+export VLS_DB_FILE='absolute path to the DB file'
+
 
 # don't edit those:
 export VLS_SECRET_KEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
