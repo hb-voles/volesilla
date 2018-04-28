@@ -2,3 +2,4 @@ pytest
 requests-mock
 pylint
 behave
+PyHamcrest
