@@ -17,7 +17,7 @@ Development
     export FLASK_APP=volesilla.py
 
     python volesilla_utils.py db_init ${VLS_DB_FILE}
-    python volesilla_utils.py db_set_user ${VLS_DB_FILE} ${VLS_APP_ADMIN_MAIL}
+    python volesilla_utils.py db_add_user ${VLS_DB_FILE} ${VLS_APP_ADMIN_MAIL}
 
     flask run
 
