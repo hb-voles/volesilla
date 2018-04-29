@@ -4,6 +4,8 @@ import os
 import subprocess
 import sqlite3
 
+from app.account.model import TokenType
+
 
 def init_db(test_dir):
     """Create database"""
@@ -60,3 +62,36 @@ def check_user_added(proc, db_file, user_mail):
             added = True
 
     assert added
+
+
+def check_active_token_exist(db_file, token_type, user_mail):
+    """Check there is active reset-password token"""
+
+    def get_token_type(token_type):
+        """Transform token_type to enum value"""
+        if token_type == 'reset-password':
+            token_value = TokenType.RESET_PASSWORD.value
+        return token_value
+
+    connection = sqlite3.connect(db_file)
+
+    with connection:
+        connection.row_factory = sqlite3.Row
+        cursor = connection.cursor()
+
+        query = """
+            SELECT token.uid AS token_uid
+            FROM token
+            JOIN user ON token.user_uid = user.uid
+            WHERE user.email = ?
+            AND token.is_active = 1
+            AND token_type = ?
+        """
+        cursor.execute(query, (user_mail, get_token_type(token_type)))
+        tokens = cursor.fetchall()
+
+    result = []
+    for token in tokens:
+        result.append(token['token_uid'])
+
+    return tokens
