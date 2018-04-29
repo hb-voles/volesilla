@@ -99,7 +99,7 @@ def forgotten_password():
 
         user = search_user_by_email(form.email.data)
         if not user:
-            form.email.errors.append('Given e-mail isn\'t registered', 'errorr')
+            form.email.errors.append('Given e-mail isn\'t registered!')
 
         if not form.errors:
             send_reset_password_mail(user)
