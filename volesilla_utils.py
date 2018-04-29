@@ -70,7 +70,7 @@ def main():
                 email=args['<user_mail>'],
                 password=BCRYPT.generate_password_hash(uuid.uuid4().hex),
                 gdpr_version=config.GDPR_VERSION,
-                is_active=False
+                is_active=True
             )
 
             DB.session.add(admin)
