@@ -2,7 +2,7 @@
 
 from behave import given, when, then  # pylint: disable=no-name-in-module
 from bs4 import BeautifulSoup
-from hamcrest import assert_that, equal_to
+from hamcrest import assert_that, equal_to, contains_string
 
 from database import init_db, check_db_created, add_user, check_user_added, check_active_token_exist
 from server import start_server
@@ -43,13 +43,27 @@ def step_impl(context, user_mail):
         context.vls['outbox'] = outbox
 
 
+@then(u'we can see "{text}" on loaded page')
+def step_impl(context, text):
+    """Check loaded page contains text"""
+
+    assert_that(str(context.vls['response'].data), contains_string(text))
+
+
 @then(u'there is active "{token_type}" token for user "{user_mail}"')
 def step_impl(context, token_type, user_mail):
-    """Check there is active reset-password token"""
+    """Check there is active token_type token for user"""
 
     context.vls['tokens'] = check_active_token_exist(context.vls['db_file'], token_type, user_mail)
-
     assert_that(len(context.vls['tokens']), equal_to(1))
+
+
+@then(u'there is no active "{token_type}" token for user "{user_mail}"')
+def step_impl(context, token_type, user_mail):
+    """Check there is no active token_type token for user"""
+
+    context.vls['tokens'] = check_active_token_exist(context.vls['db_file'], token_type, user_mail)
+    assert_that(len(context.vls['tokens']), equal_to(0))
 
 
 @then(u'account "{user_mail}" received reset-password mail with proper token')
@@ -64,3 +78,9 @@ def step_impl(context, user_mail):
         '[voles.cz] Confirmation of Password Reset'))
     assert_that(context.vls['tokens'][0]['token_uid']
                 in context.vls['outbox'][0].body, equal_to(True))
+
+
+@then(u'no mail was sent')
+def step_impl(context):
+    """Check no mail was sent"""
+    assert_that(len(context.vls['outbox']), equal_to(0))
