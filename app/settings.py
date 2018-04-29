@@ -37,8 +37,7 @@ class Config(object):
 
     RECAPTCHA_PUBLIC_KEY = os.environ.get('VLS_RECAPTCHA_PUBLIC_KEY', '')
     RECAPTCHA_PRIVATE_KEY = os.environ.get('VLS_RECAPTCHA_PRIVATE_KEY', '')
-
-    # RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
+    RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
 
     COMMIT_HASH = os.environ.get('VLS_COMMIT_HASH', 'commit-hash')
     DEPLOY_TS = os.environ.get('VLS_DEPLOY_TS', 'deploy-ts')
