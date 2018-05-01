@@ -3,12 +3,13 @@
 import os
 from multiprocessing import Process
 from bs4 import BeautifulSoup
+from hamcrest import assert_that, equal_to
 
 from app.app import create_app
 from app.settings import TestConfig
 from app.extensions import MAIL
 
-from database import init_db, check_db_created, add_user, check_user_added
+from database import init_db, check_db_created, add_user, check_user_added, check_active_token_exist
 
 
 def start_server(test_dir, db_file):  # pylint: disable=unused-argument
@@ -40,9 +41,6 @@ def start_server(test_dir, db_file):  # pylint: disable=unused-argument
 
     return vls
 
-    # with context.session.session_transaction() as sess:
-    #     sess['key here'] = some_value
-
 
 def start_server_with_admin(test_dir, user_mail):
     """Run vls server with admin user"""
@@ -73,8 +71,8 @@ def ask_for_reset_password_token(client, user_mail):
     return response, outbox
 
 
-def reset_password(client, token, password):
-    """Ask for password reset"""
+def reset_password_with_token(client, token, password):
+    """Reset password via token"""
 
     response = client.get('/password/reset/{}'.format(token))
     soup = BeautifulSoup(response.data, 'html.parser')
@@ -85,3 +83,30 @@ def reset_password(client, token, password):
         password1=password,
         password2=password
     ), follow_redirects=True)
+
+
+def reset_password(client, db_file, user_mail, password):
+    "Reset password"
+
+    ask_for_reset_password_token(client, user_mail)
+    tokens = check_active_token_exist(db_file, 'reset-password', user_mail)
+    assert_that(len(tokens), equal_to(1))
+    token = tokens[0]['token_uid']
+    response = reset_password_with_token(client, token, password)
+    assert_that(response.status_code, equal_to(200))
+
+
+def sign_in_user(client, user_mail, password):
+    """Ask for password reset"""
+
+    response = client.get('/login')
+    soup = BeautifulSoup(response.data, 'html.parser')
+    csrf = soup.find('input', {'id': 'csrf_token'})
+
+    response = client.post('/login', data=dict(
+        csrf_token=csrf['value'],
+        email=user_mail,
+        password=password,
+    ), follow_redirects=True)
+
+    return response

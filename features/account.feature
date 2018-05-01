@@ -26,3 +26,12 @@ Feature: Account
     And there is no active "reset-password" token for user "admin@test.vls"
     And confirmed_at is updated for user "admin@test.vls"
     And password of user "admin@test.vls" is "Password123"
+
+  Scenario: Sign in user
+    Given we have vls running with admin user "admin@test.vls"
+    and we reset password to "Password123" for user "admin@test.vls"
+    When user "admin@test.vls" sign in with password "Password123"
+    Then return status is "200"
+    And cookie contains key "user_email" with value "admin@test.vls"
+    And "access_token" for user "admin@test.vls" is valid (cookie)
+    And "renew_access_token" for user "admin@test.vls" is valid (cookie)
