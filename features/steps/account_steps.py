@@ -1,13 +1,12 @@
 """Account impl."""
 
 from behave import given, when, then  # pylint: disable=no-name-in-module
-from bs4 import BeautifulSoup
 from hamcrest import assert_that, equal_to, contains_string
 
-from database import init_db, check_db_created, add_user, check_user_added, check_active_token_exist
-from server import start_server
+from database import check_active_token_exist, set_old_confirmed_at, get_confirmed_at, get_password
+from server import start_server_with_admin, ask_for_reset_password_token, reset_password
 
-from app.extensions import MAIL
+from app.extensions import BCRYPT
 
 # pylint: disable=function-redefined
 
@@ -16,31 +15,16 @@ from app.extensions import MAIL
 def step_impl(context, user_mail):
     """Run vls server with admin user"""
 
-    proc_init, db_file = init_db(context.scenario_test_dir)
-    check_db_created(proc_init, db_file)
-
-    proc_add_user = add_user(db_file, user_mail)
-    check_user_added(proc_add_user, db_file, user_mail)
-
-    context.vls = start_server(context.scenario_test_dir, db_file)
+    context.vls = start_server_with_admin(context.scenario_test_dir, user_mail)
 
 
 @when(u'we ask for password reset for user "{user_mail}"')
 def step_impl(context, user_mail):
     """Ask for password reset"""
 
-    response = context.vls['client'].get('/password/forgotten')
-    soup = BeautifulSoup(response.data, 'html.parser')
-    csrf = soup.find('input', {'id': 'csrf_token'})
-
-    with MAIL.record_messages() as outbox:
-
-        context.vls['response'] = context.vls['client'].post('/password/forgotten', data=dict(
-            csrf_token=csrf['value'],
-            email=user_mail,
-        ), follow_redirects=True)
-
-        context.vls['outbox'] = outbox
+    response, outbox = ask_for_reset_password_token(context.vls['client'], user_mail)
+    context.vls['response'] = response
+    context.vls['outbox'] = outbox
 
 
 @then(u'we can see "{text}" on loaded page')
@@ -84,3 +68,44 @@ def step_impl(context, user_mail):
 def step_impl(context):
     """Check no mail was sent"""
     assert_that(len(context.vls['outbox']), equal_to(0))
+
+
+@given(u'we have "{token_type}" token for user "{user_mail}"')
+def step_impl(context, token_type, user_mail):
+    """Obtain reset-password token """
+
+    ask_for_reset_password_token(context.vls['client'], user_mail)
+    tokens = check_active_token_exist(context.vls['db_file'], token_type, user_mail)
+    assert_that(len(tokens), equal_to(1))
+
+    context.vls['token'] = tokens[0]['token_uid']
+
+
+@when(u'we reset password to "{password}"')
+def step_impl(context, password):
+    """Reset password"""
+
+    context.vls['response'] = reset_password(context.vls['client'], context.vls['token'], password)
+
+
+@given(u'confirmed_at is set old for user "{user_mail}"')
+def step_impl(context, user_mail):
+    """Set old date in confirmed_at"""
+
+    context.vls['confirmed_at'] = set_old_confirmed_at(context.vls['db_file'], user_mail)
+
+
+@then(u'confirmed_at is updated for user "{user_mail}"')
+def step_impl(context, user_mail):
+    """Check confirmed_at is updated"""
+
+    recent_confirmed_at = get_confirmed_at(context.vls['db_file'], user_mail)
+    assert context.vls['confirmed_at'] < recent_confirmed_at
+
+
+@then(u'password of user "{user_mail}" is "{password}"')
+def step_impl(context, user_mail, password):
+    """Check confirmed_at is updated"""
+
+    current_password = get_password(context.vls['db_file'], user_mail)
+    assert_that(BCRYPT.check_password_hash(current_password, password), equal_to(1))

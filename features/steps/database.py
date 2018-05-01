@@ -1,9 +1,11 @@
 """Database test utils"""
 
 import os
+from datetime import datetime, timedelta
 import subprocess
 import sqlite3
 
+from app.utils import iso2datetime
 from app.account.model import TokenType
 
 
@@ -95,3 +97,70 @@ def check_active_token_exist(db_file, token_type, user_mail):
         result.append(token['token_uid'])
 
     return tokens
+
+
+def set_old_confirmed_at(db_file, user_mail):
+    """Set old confirmed_at"""
+
+    confirmed_at = datetime.now() - timedelta(days=10)
+
+    connection = sqlite3.connect(db_file)
+
+    with connection:
+
+        connection.row_factory = sqlite3.Row
+        cursor = connection.cursor()
+
+        query = """
+            UPDATE user
+            SET confirmed_at = ?
+            WHERE user.email = ?
+        """
+
+        cursor.execute(query, (confirmed_at, user_mail))
+
+    return confirmed_at
+
+
+def get_confirmed_at(db_file, user_mail):
+    """Set old confirmed_at"""
+
+    connection = sqlite3.connect(db_file)
+
+    with connection:
+
+        connection.row_factory = sqlite3.Row
+        cursor = connection.cursor()
+
+        query = """
+            SELECT confirmed_at
+            FROM user
+            WHERE user.email = ?
+        """
+
+        cursor.execute(query, (user_mail,))
+        result = cursor.fetchone()
+
+    return iso2datetime(result['confirmed_at'])
+
+
+def get_password(db_file, user_mail):
+    """Get user password"""
+
+    connection = sqlite3.connect(db_file)
+
+    with connection:
+
+        connection.row_factory = sqlite3.Row
+        cursor = connection.cursor()
+
+        query = """
+            SELECT password
+            FROM user
+            WHERE user.email = ?
+        """
+
+        cursor.execute(query, (user_mail,))
+        result = cursor.fetchone()
+
+    return result['password']
