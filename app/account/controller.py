@@ -97,7 +97,7 @@ def create_account(password, email):
     return user
 
 
-def confirm_and_activate_account(user):
+def confirm_account(user):
     """
     Confirm and activate account
 
@@ -105,13 +105,12 @@ def confirm_and_activate_account(user):
     """
 
     user.confirmed_at = datetime.now()
-    user.is_active = True
 
     try:
         DB.session.add(user)
         DB.session.commit()
     except Exception as errorr:  # pylint: disable=broad-except,unused-variable
-        current_app.logger.error('Account confirmation and activation fails!')
+        current_app.logger.error('Account confirmation failed!')
 
 
 def send_registration_mail(user):

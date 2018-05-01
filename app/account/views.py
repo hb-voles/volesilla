@@ -11,7 +11,7 @@ from wtforms.validators import DataRequired
 
 from app.auth import login_required
 from app.account.model import Token, TokenType
-from app.account.controller import authenticate, create_account, confirm_and_activate_account, \
+from app.account.controller import authenticate, create_account, confirm_account, \
     send_registration_mail, search_user_by_email, send_reset_password_mail, change_password
 from app.account.controller_token import cancel_token_by_uid, verify_token_by_uid, \
     create_invitation_token, search_user_by_token_uid
@@ -130,7 +130,7 @@ def reset_password(token_uid):
         if not form.errors:
             password_changed = change_password(token_uid, form.password1.data)
             user = search_user_by_token_uid(token_uid)
-            confirm_and_activate_account(user)
+            confirm_account(user)
             cancel_token_by_uid(token_uid)
 
             return render_template('account/reset_password_final.html', result=password_changed)
@@ -206,7 +206,7 @@ def registration_final(token_uid):
 
     if not verify_token_by_uid(token_uid, TokenType.REGISTRATION):
         user = search_user_by_token_uid(token_uid)
-        confirm_and_activate_account(user)
+        confirm_account(user)
 
         # >>> Udelat profile
         return render_template('account/registration_final.html', result=True)
