@@ -73,6 +73,10 @@ def check_active_token_exist(db_file, token_type, user_mail):
         """Transform token_type to enum value"""
         if token_type == 'reset-password':
             token_value = TokenType.RESET_PASSWORD.value
+        if token_type == 'access_token':
+            token_value = TokenType.ACCESS.value
+        if token_type == 'renew_access_token':
+            token_value = TokenType.RENEW_ACCESS.value
         return token_value
 
     connection = sqlite3.connect(db_file)

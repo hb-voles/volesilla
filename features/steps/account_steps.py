@@ -4,7 +4,8 @@ from behave import given, when, then  # pylint: disable=no-name-in-module
 from hamcrest import assert_that, equal_to, contains_string
 
 from database import check_active_token_exist, set_old_confirmed_at, get_confirmed_at, get_password
-from server import start_server_with_admin, ask_for_reset_password_token, reset_password
+from server import start_server_with_admin, ask_for_reset_password_token, \
+    reset_password_with_token, reset_password, sign_in_user
 
 from app.extensions import BCRYPT
 
@@ -85,7 +86,8 @@ def step_impl(context, token_type, user_mail):
 def step_impl(context, password):
     """Reset password"""
 
-    context.vls['response'] = reset_password(context.vls['client'], context.vls['token'], password)
+    context.vls['response'] = reset_password_with_token(
+        context.vls['client'], context.vls['token'], password)
 
 
 @given(u'confirmed_at is set old for user "{user_mail}"')
@@ -109,3 +111,39 @@ def step_impl(context, user_mail, password):
 
     current_password = get_password(context.vls['db_file'], user_mail)
     assert_that(BCRYPT.check_password_hash(current_password, password), equal_to(1))
+
+
+@given(u'we reset password to "{password}" for user "{user_mail}"')
+def step_impl(context, password, user_mail):
+    """Reset password"""
+
+    reset_password(context.vls['client'], context.vls['db_file'], user_mail, password)
+
+
+@when(u'user "{user_mail}" sign in with password "{password}"')
+def step_impl(context, user_mail, password):
+    """Sign in user"""
+
+    context.vls['response'] = sign_in_user(context.vls['client'], user_mail, password)
+
+
+@then(u'cookie contains key "{key}" with value "{value}"')
+def step_impl(context, key, value):
+    "Check key, value in cookie"
+
+    with context.vls['session'].session_transaction() as sess:
+        assert key in sess
+        assert_that(sess[key], equal_to(value))
+
+
+@then(u'"{token_type}" for user "{user_mail}" is valid (cookie)')
+def step_impl(context, token_type, user_mail):
+    """Check token cookie"""
+
+    tokens = check_active_token_exist(context.vls['db_file'], token_type, user_mail)
+    assert_that(len(tokens), equal_to(1))
+    token = tokens[0]['token_uid']
+
+    with context.vls['session'].session_transaction() as sess:
+        assert token_type in sess
+        assert_that(sess[token_type], equal_to(token))
