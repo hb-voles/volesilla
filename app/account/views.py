@@ -20,57 +20,16 @@ from app.account.controller_token import cancel_token_by_uid, verify_token_by_ui
 BLUEPRINT = Blueprint('account', __name__, template_folder='templates')
 
 
-class RegistrationForm(FlaskForm):
-    '''Registration form'''
-
-    username = StringField('username', validators=[DataRequired()])
-    email = StringField('email', validators=[DataRequired()])
-    password1 = PasswordField('password', validators=[DataRequired()])
-    password2 = PasswordField('password again', validators=[DataRequired()])
-    token = StringField('invitation token', validators=[DataRequired()])
-    accept_gdpr = BooleanField('I agree with GDPR Statement (v1)')
-    recaptcha = RecaptchaField()
-
-
-class LoginForm(FlaskForm):
-    '''Login form'''
-
-    email = StringField('e-mail', validators=[DataRequired()])
-    password = PasswordField('password', validators=[DataRequired()])
-    recaptcha = RecaptchaField()
-
-
-class ForgottenPasswordForm(FlaskForm):
-    '''Forgotten Password form'''
-
-    email = StringField('e-mail', validators=[DataRequired()])
-    recaptcha = RecaptchaField()
-
-
-class ResetPasswordForm(FlaskForm):
-    '''Forgotten Password form'''
-
-    password1 = PasswordField('new password', validators=[DataRequired()])
-    password2 = PasswordField('new password again', validators=[DataRequired()])
-    recaptcha = RecaptchaField()
-
-
-class InvitationForm(FlaskForm):
-    '''Invitation form'''
-
-    created_by = StringField('created_by', render_kw={'readonly': 'readonly'})
-    created = StringField('created', render_kw={'readonly': 'readonly'}, default=datetime.now())
-    valid_until = StringField(
-        'valid_until',
-        render_kw={'readonly': 'readonly'},
-        default=datetime.now() + timedelta(days=2)
-    )
-    for_user = StringField('for_user', validators=[DataRequired()])
-
-
 @BLUEPRINT.route('/login', methods=('GET', 'POST'))
 def login():
     '''View function'''
+
+    class LoginForm(FlaskForm):
+        '''Login form'''
+
+        email = StringField('e-mail', validators=[DataRequired()])
+        password = PasswordField('password', validators=[DataRequired()])
+        recaptcha = RecaptchaField()
 
     if 'next' in request.args:
         target = request.args['next']
@@ -92,6 +51,12 @@ def login():
 @BLUEPRINT.route('/password/forgotten', methods=('GET', 'POST'))
 def forgotten_password():
     """Forgotten password"""
+
+    class ForgottenPasswordForm(FlaskForm):
+        '''Forgotten Password form'''
+
+        email = StringField('e-mail', validators=[DataRequired()])
+        recaptcha = RecaptchaField()
 
     form = ForgottenPasswordForm()
 
@@ -117,6 +82,14 @@ def forgotten_password():
 @BLUEPRINT.route('/password/reset/<token_uid>', methods=('GET', 'POST'))
 def reset_password(token_uid):
     """Reset password form"""
+
+    class ResetPasswordForm(FlaskForm):
+        '''Forgotten Password form'''
+
+        password1 = PasswordField('new password', validators=[DataRequired()])
+        password2 = PasswordField('new password again',
+                                  validators=[DataRequired()])
+        recaptcha = RecaptchaField()
 
     form = ResetPasswordForm()
 
@@ -160,6 +133,18 @@ def logout():
 @BLUEPRINT.route('/registration', methods=('GET', 'POST'))
 def registration():
     '''View function'''
+
+    class RegistrationForm(FlaskForm):
+        '''Registration form'''
+
+        username = StringField('username', validators=[DataRequired()])
+        email = StringField('email', validators=[DataRequired()])
+        password1 = PasswordField('password', validators=[DataRequired()])
+        password2 = PasswordField('password again',
+                                  validators=[DataRequired()])
+        token = StringField('invitation token', validators=[DataRequired()])
+        accept_gdpr = BooleanField('I agree with GDPR Statement (v1)')
+        recaptcha = RecaptchaField()
 
     form = RegistrationForm()
 
@@ -228,6 +213,20 @@ def invitation_index():
 @login_required
 def invitation_new():
     '''View function'''
+
+    class InvitationForm(FlaskForm):
+        '''Invitation form'''
+
+        created_by = StringField('created_by',
+                                 render_kw={'readonly': 'readonly'})
+        created = StringField('created', render_kw={'readonly': 'readonly'},
+                              default=datetime.now())
+        valid_until = StringField(
+            'valid_until',
+            render_kw={'readonly': 'readonly'},
+            default=datetime.now() + timedelta(days=2)
+        )
+        for_user = StringField('for_user', validators=[DataRequired()])
 
     with current_app.app_context():
         user = search_user_by_token_uid(session['access_token'])
