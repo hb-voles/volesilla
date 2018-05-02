@@ -1,9 +1,9 @@
-'''Exceptions'''
+"""Exceptions"""
 from flask import jsonify
 
 
 def template(data, code=500):
-    '''Helper'''
+    """Helper"""
     return {'message': {'errors': {'body': data}}, 'status_code': code}
 
 
@@ -15,12 +15,12 @@ COMMENT_NOT_OWNED = template(['Not your article'], code=422)
 
 
 class InvalidUsage(Exception):
-    '''Exception INvalidUsage'''
+    """Exception INvalidUsage"""
 
     status_code = 500
 
     def __init__(self, message, status_code=None, payload=None):
-        '''Init'''
+        """Init"""
         Exception.__init__(self)
         self.message = message
         if status_code is not None:
@@ -28,30 +28,30 @@ class InvalidUsage(Exception):
         self.payload = payload
 
     def to_json(self):
-        '''Helper'''
+        """Helper"""
         return jsonify(self.message)
 
     @classmethod
     def user_not_found(cls):
-        '''User not found'''
+        """User not found"""
         return cls(**USER_NOT_FOUND)
 
     @classmethod
     def user_already_registered(cls):
-        '''User already registered'''
+        """User already registered"""
         return cls(**USER_ALREADY_REGISTERED)
 
     @classmethod
     def unknown_error(cls):
-        '''Unknown error'''
+        """Unknown error"""
         return cls(**UNKNOWN_ERROR)
 
     @classmethod
     def article_not_found(cls):
-        '''Article not found'''
+        """Article not found"""
         return cls(**ARTICLE_NOT_FOUND)
 
     @classmethod
     def comment_not_owned(cls):
-        '''Comment not owned'''
+        """Comment not owned"""
         return cls(**COMMENT_NOT_OWNED)

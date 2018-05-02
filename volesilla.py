@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''Entrypoint'''
+"""Entrypoint"""
 
 from flask.helpers import get_debug_flag
 from app.app import create_app

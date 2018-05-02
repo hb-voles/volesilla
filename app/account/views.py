@@ -22,10 +22,10 @@ BLUEPRINT = Blueprint('account', __name__, template_folder='templates')
 
 @BLUEPRINT.route('/login', methods=('GET', 'POST'))
 def login():
-    '''View function'''
+    """View function"""
 
     class LoginForm(FlaskForm):
-        '''Login form'''
+        """Login form"""
 
         email = StringField('e-mail', validators=[DataRequired()])
         password = PasswordField('password', validators=[DataRequired()])
@@ -53,7 +53,7 @@ def forgotten_password():
     """Forgotten password"""
 
     class ForgottenPasswordForm(FlaskForm):
-        '''Forgotten Password form'''
+        """Forgotten Password form"""
 
         email = StringField('e-mail', validators=[DataRequired()])
         recaptcha = RecaptchaField()
@@ -84,7 +84,7 @@ def reset_password(token_uid):
     """Reset password form"""
 
     class ResetPasswordForm(FlaskForm):
-        '''Forgotten Password form'''
+        """Forgotten Password form"""
 
         password1 = PasswordField('new password', validators=[DataRequired()])
         password2 = PasswordField('new password again',
@@ -116,7 +116,7 @@ def reset_password(token_uid):
 
 @BLUEPRINT.route('/logout')
 def logout():
-    '''View function'''
+    """View function"""
 
     if 'access_token' in session:
         cancel_token_by_uid(session['access_token'])
@@ -132,10 +132,10 @@ def logout():
 
 @BLUEPRINT.route('/registration', methods=('GET', 'POST'))
 def registration():
-    '''View function'''
+    """View function"""
 
     class RegistrationForm(FlaskForm):
-        '''Registration form'''
+        """Registration form"""
 
         username = StringField('username', validators=[DataRequired()])
         email = StringField('email', validators=[DataRequired()])
@@ -187,7 +187,7 @@ def registration():
 
 @BLUEPRINT.route('/registration/final/<token_uid>')
 def registration_final(token_uid):
-    '''View function'''
+    """View function"""
 
     if not verify_token_by_uid(token_uid, TokenType.REGISTRATION):
         user = search_user_by_token_uid(token_uid)
@@ -202,7 +202,7 @@ def registration_final(token_uid):
 @BLUEPRINT.route('/invitation')
 @login_required
 def invitation_index():
-    '''View function'''
+    """View function"""
 
     invitations = Token.query.all()
 
@@ -212,10 +212,10 @@ def invitation_index():
 @BLUEPRINT.route('/invitation/new', methods=('GET', 'POST'))
 @login_required
 def invitation_new():
-    '''View function'''
+    """View function"""
 
     class InvitationForm(FlaskForm):
-        '''Invitation form'''
+        """Invitation form"""
 
         created_by = StringField('created_by',
                                  render_kw={'readonly': 'readonly'})

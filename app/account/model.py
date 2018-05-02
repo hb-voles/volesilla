@@ -1,4 +1,4 @@
-'''Data model for user'''
+"""Data model for user"""
 
 from enum import Enum, unique
 import uuid
@@ -7,7 +7,7 @@ from app.extensions import DB, UUID
 
 
 class User(DB.Model):
-    '''User data model'''
+    """User data model"""
 
     uid = DB.Column(UUID, primary_key=True, default=uuid.uuid4)
     email = DB.Column(DB.String(255), nullable=False, unique=True)
@@ -19,7 +19,7 @@ class User(DB.Model):
 
 @unique
 class TokenType(Enum):
-    '''Type of tokens'''
+    """Type of tokens"""
 
     INVITATION = 1
     REGISTRATION = 2
@@ -29,7 +29,7 @@ class TokenType(Enum):
 
 
 class Token(DB.Model):
-    '''Token data model'''
+    """Token data model"""
 
     uid = DB.Column(UUID, primary_key=True, default=uuid.uuid4)
     token_type = DB.Column(DB.Integer, nullable=False)

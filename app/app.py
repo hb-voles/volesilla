@@ -68,19 +68,19 @@ def register_errorhandlers(app):
 
 
 def register_context_processots(app):
-    '''Register context processors.'''
+    """Register context processors."""
 
     @app.context_processor
     def inject_navbar():  # pylint: disable=unused-variable
-        '''Inject our navbar to the global context'''
+        """Inject our navbar to the global context"""
         return build_navbar()
 
     @app.context_processor
     def is_authenticated():  # pylint: disable=unused-variable
-        '''Tell if user is authenticated'''
+        """Tell if user is authenticated"""
         return dict(is_authenticated=verify_authentication)
 
     @app.context_processor
     def inject_footer_variables():  # pylint: disable=unused-variable
-        '''Inject footer variable'''
+        """Inject footer variable"""
         return dict(commit_hash=app.config['COMMIT_HASH'], deploy_ts=app.config['DEPLOY_TS'])

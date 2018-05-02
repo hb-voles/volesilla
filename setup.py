@@ -1,4 +1,4 @@
-'''Volesilla's Setup script'''
+"""Volesilla's Setup script"""
 
 from setuptools import setup, find_packages
 

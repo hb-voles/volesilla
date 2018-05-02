@@ -8,6 +8,6 @@ BLUEPRINT = Blueprint('voles', __name__, template_folder='templates')
 
 @BLUEPRINT.route('/')
 def index():
-    '''View function'''
+    """View function"""
 
     return render_template('voles/voles.html')
