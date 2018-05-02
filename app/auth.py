@@ -8,15 +8,11 @@ from app.account.controller_token import verify_authentication
 
 
 def login_required(func):
-    '''
-    Decorator login_required
-    '''
+    """Decorator login_required"""
 
     @wraps(func)
     def decorated_view(*args, **kwargs):
-        '''
-        Switch between requested page and login form
-        '''
+        """Switch between requested page and login form"""
 
         if not verify_authentication():
             return redirect(url_for('account.login', next=request.url))

@@ -1,10 +1,10 @@
-'''Module for navigation bar'''
+"""Module for navigation bar"""
 
 from flask import url_for
 
 
 def build_navbar():
-    '''Return navbar according to visibility (is_public)'''
+    """Return navbar according to visibility (is_public)"""
 
     navbar = [
         {
