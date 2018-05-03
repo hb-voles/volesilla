@@ -5,7 +5,7 @@ from hamcrest import assert_that, equal_to, contains_string
 
 from database import check_active_token_exist, set_old_confirmed_at, get_confirmed_at, get_password
 from server import start_server_with_admin, ask_for_reset_password_token, \
-    reset_password_with_token, reset_password, sign_in_user
+    reset_password_with_token, reset_password, sign_in_user, ask_for_new_invitation
 
 from app.extensions import BCRYPT
 
@@ -51,16 +51,22 @@ def step_impl(context, token_type, user_mail):
     assert_that(len(context.vls['tokens']), equal_to(0))
 
 
-@then(u'account "{user_mail}" received reset-password mail with proper token')
-def step_impl(context, user_mail):
+@then(u'account "{user_mail}" received "{mail_type}" mail with proper token')
+def step_impl(context, user_mail, mail_type):
     """Check reset-password mail"""
 
     assert_that(len(context.vls['outbox']), equal_to(1))
     assert_that(context.vls['outbox'][0].sender, equal_to('Hell-Bent VoleS <>'))
     assert_that(len(context.vls['outbox'][0].recipients), equal_to(1))
     assert_that(str(context.vls['outbox'][0].recipients[0]), equal_to(user_mail))
-    assert_that(context.vls['outbox'][0].subject, equal_to(
-        '[voles.cz] Confirmation of Password Reset'))
+
+    if mail_type == 'reset-password':
+        assert_that(context.vls['outbox'][0].subject, equal_to(
+            '[voles.cz] Confirmation of Password Reset'))
+    if mail_type == 'registration':
+        assert_that(context.vls['outbox'][0].subject, equal_to(
+            '[voles.cz] Invitation'))
+
     assert_that(context.vls['tokens'][0]['token_uid']
                 in context.vls['outbox'][0].body, equal_to(True))
 
@@ -147,3 +153,20 @@ def step_impl(context, token_type, user_mail):
     with context.vls['session'].session_transaction() as sess:
         assert token_type in sess
         assert_that(sess[token_type], equal_to(token))
+
+
+@given(u'user "{user_mail}" is logged in with password "{password}"')
+def step_impl(context, user_mail, password):
+    """User id logged in"""
+
+    reset_password(context.vls['client'], context.vls['db_file'], user_mail, password)
+    sign_in_user(context.vls['client'], user_mail, password)
+    context.vls['user_mail'] = user_mail
+
+
+@when(u'logged user create invitation for email "{unregistered_mail}" with steam id "{steam_id}"')
+def step_impl(context, unregistered_mail, steam_id):
+    """Create invitation"""
+
+    context.vls['response'], context.vls['outbox'] = ask_for_new_invitation(
+        context.vls['client'], context.vls['user_mail'], unregistered_mail, steam_id)

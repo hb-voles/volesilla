@@ -15,6 +15,7 @@ setup(
     install_requires=[
         'docopt',
         'python-dateutil',
+        'requests',
         'beautifulsoup4',
         'uWSGI==2.0.17',
         'Flask==0.12',

@@ -8,11 +8,14 @@ New Invite
 
     <form method="POST" action="{{ url_for('account.invitation_new') }}">
         {{ form.csrf_token }}
-        <p> {{ form.created_by.label }} <br> {{ form.created_by(size=20) }}
-        <p> {{ form.created.label }} <br> {{ form.created(size=20) }}
-        <p> {{ form.valid_until.label }} <br> {{ form.valid_until(size=20) }}
-        <p> {{ form.for_user.label }} <br> {{ form.for_user(size=20) }} <br>
+        {{ form.created_by}}
+        <p> {{ form.email.label }} <br> {{ form.email(size=20) }}
+        <p> {{ form.steam_id.label }} <br> {{ form.steam_id(size=20) }}
         <p> <input type="submit" class="btn btn-primary" value="Create Invitation">
     </form>
+
+    <br />
+
+    <div>If you can't find Steam ID, try <a href="https://steamidfinder.com/" target="_blank">steamidfinder</a>.</div>
 
 {% endblock %}

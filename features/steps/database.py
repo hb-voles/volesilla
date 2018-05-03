@@ -45,7 +45,7 @@ def add_user(db_file, user_mail):
 def check_user_added(proc, db_file, user_mail):
     """Check user was added"""
 
-    proc.wait(timeout=3)
+    proc.wait(timeout=5)
     assert proc.returncode == 0
     assert os.path.isfile(db_file)
 
@@ -71,6 +71,8 @@ def check_active_token_exist(db_file, token_type, user_mail):
 
     def get_token_type(token_type):
         """Transform token_type to enum value"""
+        if token_type == 'invitation_token':
+            token_value = TokenType.INVITATION.value
         if token_type == 'reset-password':
             token_value = TokenType.RESET_PASSWORD.value
         if token_type == 'access_token':

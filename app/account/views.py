@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 """User views."""
 
-from datetime import datetime, timedelta
 from flask import current_app, Blueprint, flash, render_template, redirect, \
     request, session, url_for
 
 from flask_wtf import FlaskForm, RecaptchaField
-from wtforms import StringField, PasswordField, BooleanField
+from wtforms import StringField, PasswordField, BooleanField, HiddenField
 from wtforms.validators import DataRequired
 
 from app.auth import login_required
 from app.account.model import Token, TokenType
-from app.account.controller import authenticate, create_account, confirm_account, \
-    send_registration_mail, search_user_by_email, send_reset_password_mail, change_password
+from app.account.controller import send_invitation_mail, search_user_by_email, \
+    send_reset_password_mail, get_steam_player, create_player
+from app.account.controller_account import create_account, change_password, confirm_account
+from app.account.controller_auth import authenticate, get_logged_user
 from app.account.controller_token import cancel_token_by_uid, verify_token_by_uid, \
     create_invitation_token, search_user_by_token_uid
 
@@ -130,23 +131,30 @@ def logout():
     return redirect(url_for('voles.index'))
 
 
-@BLUEPRINT.route('/registration', methods=('GET', 'POST'))
-def registration():
+@BLUEPRINT.route('/registration/token/<invitation_token_uid>', methods=('GET', 'POST'))
+def registration_via_token(invitation_token_uid):
     """View function"""
 
     class RegistrationForm(FlaskForm):
         """Registration form"""
 
-        username = StringField('username', validators=[DataRequired()])
         email = StringField('email', validators=[DataRequired()])
         password1 = PasswordField('password', validators=[DataRequired()])
         password2 = PasswordField('password again',
                                   validators=[DataRequired()])
-        token = StringField('invitation token', validators=[DataRequired()])
-        accept_gdpr = BooleanField('I agree with GDPR Statement (v1)')
+        accept_gdpr = BooleanField(
+            'I agree with GDPR Statement (v{})'.format(
+                current_app.config['GDPR_VERSION']))
         recaptcha = RecaptchaField()
 
+    if not verify_token_by_uid(invitation_token_uid, TokenType.INVITATION):
+        flash('Invalid invitation token!', 'error')
+        return redirect(url_for('voles.index'))
+
+    user = search_user_by_token_uid(invitation_token_uid)
+
     form = RegistrationForm()
+    form.email.data = user.email
 
     if form.validate_on_submit():
 
@@ -161,19 +169,10 @@ def registration():
                 '<strong>mandatory</strong> for successful registration!'
             )
 
-        if not verify_token_by_uid(form.token.data, TokenType.INVITATION):
-            form.token.errors.append('Invalid invitation token!')
-
         if not form.errors:
-
-            user = create_account(
-                password=form.password1.data,
-                email=form.email.data,
-            )
-
-            send_registration_mail(user)
-
-            return render_template('account/registration_confirmation.html', mail=form.email.data)
+            confirm_account(user)
+            change_password(invitation_token_uid, form.password1.data)
+            return render_template('account/registration_final.html', result=True)
 
     if form.errors:
         flash('Registration form isn\'t filled correctly!', 'error')
@@ -181,22 +180,9 @@ def registration():
     return render_template(
         'account/registration.html',
         form=form,
-        gdpr_version=current_app.config['GDPR_VERSION']
+        gdpr_version=current_app.config['GDPR_VERSION'],
+        invitation_token_uid=invitation_token_uid
     )
-
-
-@BLUEPRINT.route('/registration/final/<token_uid>')
-def registration_final(token_uid):
-    """View function"""
-
-    if not verify_token_by_uid(token_uid, TokenType.REGISTRATION):
-        user = search_user_by_token_uid(token_uid)
-        confirm_account(user)
-
-        # >>> Udelat profile
-        return render_template('account/registration_final.html', result=True)
-
-    return render_template('account/registration_final.html', result=False)
 
 
 @BLUEPRINT.route('/invitation')
@@ -209,6 +195,41 @@ def invitation_index():
     return render_template('account/invitation_index.html', invitations=invitations)
 
 
+class CheckInvitationForm(FlaskForm):
+    """Check Invitation form"""
+
+    new_user_email = HiddenField(
+        'email', validators=[
+            DataRequired()], render_kw={
+                'readonly': 'readonly'})
+    steam_id = HiddenField(
+        'steam id', validators=[
+            DataRequired()], render_kw={
+                'readonly': 'readonly'})
+    created_by = HiddenField(
+        'created_by', validators=[
+            DataRequired()], render_kw={
+                'readonly': 'readonly'})
+
+    player_name = StringField(
+        'player name', validators=[
+            DataRequired()], render_kw={
+                'readonly': 'readonly'})
+    steam_profile = HiddenField(
+        'steam profile', validators=[
+            DataRequired()], render_kw={
+                'readonly': 'readonly'})
+    avatar = HiddenField('avatar', validators=[DataRequired()], render_kw={'readonly': 'readonly'})
+    avatar_medium = HiddenField(
+        'avatar_medium', validators=[
+            DataRequired()], render_kw={
+                'readonly': 'readonly'})
+    avatar_full = HiddenField(
+        'avatar_full', validators=[
+            DataRequired()], render_kw={
+                'readonly': 'readonly'})
+
+
 @BLUEPRINT.route('/invitation/new', methods=('GET', 'POST'))
 @login_required
 def invitation_new():
@@ -217,24 +238,72 @@ def invitation_new():
     class InvitationForm(FlaskForm):
         """Invitation form"""
 
-        created_by = StringField('created_by',
+        email = StringField('email', validators=[DataRequired()])
+        steam_id = StringField('steam id', validators=[DataRequired()])
+
+        # TODO: This should be user_uid, maybe
+        created_by = HiddenField('created_by',
                                  render_kw={'readonly': 'readonly'})
-        created = StringField('created', render_kw={'readonly': 'readonly'},
-                              default=datetime.now())
-        valid_until = StringField(
-            'valid_until',
-            render_kw={'readonly': 'readonly'},
-            default=datetime.now() + timedelta(days=2)
-        )
-        for_user = StringField('for_user', validators=[DataRequired()])
 
     with current_app.app_context():
         user = search_user_by_token_uid(session['access_token'])
-
         form = InvitationForm(created_by=user.email)
 
         if form.validate_on_submit():
-            token = create_invitation_token(user.uid, form.for_user.data)
-            return render_template('account/invitation_final.html', invitation_token=token.uid.hex)
+            # token = create_invitation_token(user.uid, form.for_user.data)
+
+            player_data = get_steam_player(form.steam_id)
+
+            check_form = CheckInvitationForm()
+
+            check_form.new_user_email.data = form.email.data
+            check_form.steam_id.data = form.steam_id.data
+            check_form.created_by.data = form.created_by.data
+            check_form.player_name.data = player_data['personaname']
+            check_form.steam_profile.data = player_data['profileurl']
+            check_form.avatar.data = player_data['avatar']
+            check_form.avatar_medium.data = player_data['avatarmedium']
+            check_form.avatar_full.data = player_data['avatarfull']
+
+            return render_template(
+                'account/invitation_check.html',
+                steam_profile=player_data['profileurl'],
+                avatar=player_data['avatarfull'],
+                form=check_form)
 
     return render_template('account/invitation_new.html', form=form)
+
+
+@BLUEPRINT.route('/invitation/check', methods=('GET', 'POST'))
+@login_required
+def invitation_check():
+    """View function"""
+
+    form = CheckInvitationForm()
+
+    if form.validate_on_submit():
+
+        if not form.errors:
+
+            new_user = create_account(form.new_user_email.data)
+            invitation_token = create_invitation_token(new_user, get_logged_user())
+            invitation_token_hex = invitation_token.uid.hex
+            player = create_player(
+                new_user,
+                form.steam_id.data,
+                form.player_name.data,
+                form.avatar.data,
+                form.avatar_medium.data,
+                form.avatar_full.data)
+            send_invitation_mail(new_user, player.name, invitation_token_hex)
+
+            return render_template('account/invitation_final.html', mail=new_user.email)
+
+    if form.errors:
+        flash('Profile is not correct!', 'error')
+
+    return render_template(
+        'account/invitation_check.html',
+        steam_profile=form.steam_profile.data,
+        avatar=form.avatar_full.data,
+        form=form)

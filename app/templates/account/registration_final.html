@@ -1,23 +1,11 @@
 {% extends "common/page_base.html" %}
 
-{% set title_value="Successful Registration" %}
-{% set lead="You're registered now!" %}
-{% set paragraph="Please, fill your <a href="{{ url_for('/') }}">your profile</a> (Sorry, not implemented yet.)" %}
-{% if result==False %}
-    {% set title_value='Registration Failed' %}
-    {% set lead="Your Token was outdated!" %}
-    {% set paragraph="Please, ask your <strong>Hell-Bent VoleS</strong>strong> contact for the new invitation." %}
-{% endif %}
-
-
 {% block title %}
-{{ title_value }}
+Successful Registration
 {% endblock %}
 
 {% block content %}
 
-    <p class="lead">{{ lead }}</p>
-
-    {{ paragraph}}
+    <p class="lead">You're registered now!</p>
 
 {% endblock %}

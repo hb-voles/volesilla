@@ -125,6 +125,8 @@ Source
 
 <https://www.crummy.com/software/BeautifulSoup/bs4/doc/#>
 
+<https://httpretty.readthedocs.io/en/stable/tutorial.html>
+
 Notes
 -----
 

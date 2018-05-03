@@ -20,12 +20,6 @@ def build_navbar():
             'visibility': 'private',
         },
         {
-            'link': url_for('account.registration'),
-            'label': 'Registration',
-            'position': 'right',
-            'visibility': 'public',
-        },
-        {
             'link': url_for('account.login'),
             'label': 'Sign In',
             'position': 'right',
