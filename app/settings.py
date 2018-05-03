@@ -39,6 +39,8 @@ class Config(object):
     RECAPTCHA_PRIVATE_KEY = os.environ.get('VLS_RECAPTCHA_PRIVATE_KEY', '')
     RECAPTCHA_DATA_ATTRS = {'theme': 'dark'}
 
+    STEAM_WEB_API_KEY = os.environ.get('VLS_STEAM_WEB_API_KEY', '')
+
     COMMIT_HASH = os.environ.get('VLS_COMMIT_HASH', 'commit-hash')
     DEPLOY_TS = os.environ.get('VLS_DEPLOY_TS', 'deploy-ts')
 
