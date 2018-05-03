@@ -12,6 +12,8 @@ export VLS_MAIL_PASSWORD='app password'
 export VLS_RECAPTCHA_PUBLIC_KEY='required a public key>'
 export VLS_RECAPTCHA_PRIVATE_KEY='required a private key'
 
+export VLS_STEAM_WEB_API_KEY='Steam WEB API KEY'
+
 export VLS_DB_FILE='absolute path to the DB file'
 
 
