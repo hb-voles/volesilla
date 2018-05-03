@@ -2,7 +2,7 @@
 
 from datetime import datetime, timedelta
 
-from flask import session
+from flask import current_app, session
 
 from app.extensions import DB
 from app.account.model import Token, TokenType
@@ -19,18 +19,27 @@ def create_token(token_type, valid_period, user_uid, note=''):
     :return: Newly created token.
     """
 
-    token = Token(
-        token_type=token_type,
-        created_at=datetime.now(),
-        valid_until=datetime.now() + valid_period,
-        user_uid=user_uid,
-        note=note,
-    )
+    with current_app.app_context():
 
-    DB.session.add(token)
-    DB.session.commit()
+        token = Token(
+            token_type=token_type,
+            created_at=datetime.now(),
+            valid_until=datetime.now() + valid_period,
+            user_uid=user_uid,
+            note=note,
+        )
 
-    return token
+        try:
+            DB.session.add(token)
+            DB.session.flush()
+            uid = token.uid
+            DB.session.commit()
+        except Exception as error:  # pylint: disable=broad-except,unused-variable
+            current_app.logger.error('Write new token into DB fails! {}'.format(error))
+
+    new_token = Token.query.filter_by(uid=uid).first()
+
+    return new_token
 
 
 def cancel_token(token):
@@ -86,7 +95,7 @@ def verify_token_by_uid(token_uid, token_type):
     return verify_token(token, token_type) if token else False
 
 
-def create_invitation_token(user_uid, note_for_whom):
+def create_invitation_token(new_user, inviting_user):
     """
     Create new invitation token.
 
@@ -98,8 +107,8 @@ def create_invitation_token(user_uid, note_for_whom):
     return create_token(
         token_type=TokenType.INVITATION.value,
         valid_period=timedelta(days=2),
-        user_uid=user_uid,
-        note=note_for_whom
+        user_uid=new_user.uid.hex,
+        note=inviting_user.uid.hex,
     )
 
 
@@ -171,9 +180,11 @@ def search_user_by_token_uid(token_uid):
     :return: User if exists and token is active else None
     """
 
-    token = Token.query.filter_by(uid=token_uid).first()
-    if token:
-        return token.user if token.is_active else None
+    with current_app.app_context():
+        token = Token.query.filter_by(uid=token_uid).first()
+
+        if token:
+            return token.user
 
     return None
 
@@ -185,29 +196,31 @@ def verify_authentication():
     :return: True if authenticated else False
     """
 
-    if 'access_token' not in session:
+    with current_app.app_context():
+
+        if 'access_token' not in session:
+            return False
+
+        access_token_uid = session['access_token']
+        if verify_token_by_uid(access_token_uid, TokenType.ACCESS):
+            return True
+
+        if 'renew_access_token' not in session:
+            return False
+
+        renew_access_token_uid = session['renew_access_token']
+        if verify_token_by_uid(renew_access_token_uid, TokenType.RENEW_ACCESS):
+
+            user = search_user_by_token_uid(renew_access_token_uid)
+
+            cancel_token_by_uid(renew_access_token_uid)
+
+            access_token = create_access_token(user.uid)
+            renew_access_token = create_renew_access_token(user.uid)
+
+            session['access_token'] = access_token.uid.hex
+            session['renew_access_token'] = renew_access_token.uid.hex
+
+            return True
+
         return False
-
-    access_token_uid = session['access_token']
-    if verify_token_by_uid(access_token_uid, TokenType.ACCESS):
-        return True
-
-    if 'renew_access_token' not in session:
-        return False
-
-    renew_access_token_uid = session['renew_access_token']
-    if verify_token_by_uid(renew_access_token_uid, TokenType.RENEW_ACCESS):
-
-        user = search_user_by_token_uid(renew_access_token_uid)
-
-        cancel_token_by_uid(renew_access_token_uid)
-
-        access_token = create_access_token(user.uid)
-        renew_access_token = create_renew_access_token(user.uid)
-
-        session['access_token'] = access_token.uid.hex
-        session['renew_access_token'] = renew_access_token.uid.hex
-
-        return True
-
-    return False

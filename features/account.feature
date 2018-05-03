@@ -6,7 +6,7 @@ Feature: Account
     Then return status is "200"
     And we can see "Check your mail" on loaded page
     And there is active "reset-password" token for user "admin@test.vls"
-    And account "admin@test.vls" received reset-password mail with proper token
+    And account "admin@test.vls" received "reset-password" mail with proper token
 
   Scenario: Ask for password reset with unregistered user
     Given we have vls running with admin user "admin@test.vls"
@@ -35,3 +35,11 @@ Feature: Account
     And cookie contains key "user_email" with value "admin@test.vls"
     And "access_token" for user "admin@test.vls" is valid (cookie)
     And "renew_access_token" for user "admin@test.vls" is valid (cookie)
+
+  Scenario: Send invitation
+    Given we have vls running with admin user "admin@test.vls"
+    and user "admin@test.vls" is logged in with password "Password123"
+    When logged user create invitation for email "unregistered@test.vls" with steam id "76561198075520737"
+    Then return status is "200"
+    And there is active "invitation_token" token for user "unregistered@test.vls"
+    And account "unregistered@test.vls" received "registration" mail with proper token

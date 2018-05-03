@@ -3,3 +3,4 @@ requests-mock
 pylint
 behave
 PyHamcrest
+httpretty

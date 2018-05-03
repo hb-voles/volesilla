@@ -1,0 +1,40 @@
+{% extends "common/page_base.html" %}
+
+{% block title %}
+Are those information correct?
+{% endblock %}
+
+{% block content %}
+
+    <p> <img src="{{ avatar }}" alt="medium avatar"> </p>
+    <p> <a href="{{ steam_profile }}" target="_blank">steam profile</a> </p>
+
+    <form method="POST" action="{{ url_for('account.invitation_check') }}">
+        <fieldset>
+
+            {{ form.csrf_token }}
+
+            {% for field in form %}
+                {% if field.type!='HiddenField' %}
+                    {% if field.name!='csrf_token' %}
+
+                        <div class="form-group">
+                            {% for error in field.errors %}
+                                <p class="text-danger">{{ error }}</p>
+                            {% endfor %}
+                            {{ field.label }} <br> {{ field(size=25) }}
+                        </div>
+
+                    {% endif %}
+                {% else %}
+                    {{ field }}
+                {% endif %}
+            {% endfor %}
+
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="Send Invitation">
+            </div>
+        </fieldset>
+    </form>
+
+{% endblock %}

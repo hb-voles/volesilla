@@ -10,59 +10,28 @@ Registration
 <div class="row">
   <div class="col-md-7">
 
-    <form method="POST" action="{{ url_for('account.registration') }}">
+    <form method="POST" action="{{ url_for('account.registration_via_token', invitation_token_uid=invitation_token_uid) }}">
         <fieldset>
             <legend>Registration Form</legend>
             {{ form.csrf_token }}
-            <div class="form-group">
-                {% for error in form.username.errors %}
-                    <p class="text-danger">{{ error }}</p>
-                {% endfor %}
 
-                {{ form.username.label }} <br> {{ form.username(size=25) }}
-            </div>
-            <div class="form-group">
-                {% for error in form.email.errors %}
-                    <p class="text-danger">{{ error }}</p>
-                {% endfor %}
+            {% for field in form %}
+                {% if field.type!='HiddenField' %}
+                    {% if field.name!='csrf_token' %}
 
-                {{ form.email.label }} <br> {{ form.email(size=25) }}
-            </div>
-            <div class="form-group">
-                {% for error in form.password1.errors %}
-                    <p class="text-danger">{{ error }}</p>
-                {% endfor %}
+                        <div class="form-group">
+                            {% for error in field.errors %}
+                                <p class="text-danger">{{ error }}</p>
+                            {% endfor %}
+                            {{ field.label }} <br> {{ field(size=25) }}
+                        </div>
 
-                {{ form.password1.label }} <br> {{ form.password1(size=25) }}
-            </div>
-            <div class="form-group">
-                {% for error in form.password2.errors %}
-                    <p class="text-danger">{{ error }}</p>
-                {% endfor %}
+                    {% endif %}
+                {% else %}
+                    {{ field }}
+                {% endif %}
+            {% endfor %}
 
-                {{ form.password2.label }} <br> {{ form.password2(size=25) }}
-            </div>
-            <div class="form-group">
-                {% for error in form.token.errors %}
-                    <p class="text-danger">{{ error }}</p>
-                {% endfor %}
-
-                {{ form.token.label }} <br> {{ form.token(size=34) }}
-            </div>
-            <div class="form-group">
-                {% for error in form.accept_gdpr.errors %}
-                    <p class="text-danger">{{ error }}</p>
-                {% endfor %}
-
-                {{ form.accept_gdpr.label }} <br> {{ form.accept_gdpr }}
-            </div>
-            <div class="form-group">
-                {% for error in form.recaptcha.errors %}
-                    <p class="text-danger">{{ error }}</p>
-                {% endfor %}
-
-                {{ form.recaptcha }}
-            </div>
             <div class="form-group">
                 <input type="submit" class="btn btn-primary" value="Register">
             </div>
