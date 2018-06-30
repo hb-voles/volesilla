@@ -7,7 +7,7 @@ Development
 -----------
 
     # Edit volesilla deploy environemt
-    cp contrib/env .env
+    cp -iv contrib/env .env
     vim .env
 
     tox -re py36
