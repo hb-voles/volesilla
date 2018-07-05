@@ -112,21 +112,6 @@ def create_invitation_token(new_user, inviting_user):
     )
 
 
-def create_registration_token(user_uid):
-    """
-    Create new registration token.
-
-    :param user_uid: Registering user.
-    :return: Newly created registration token.
-    """
-
-    return create_token(
-        token_type=TokenType.REGISTRATION.value,
-        valid_period=timedelta(hours=1),
-        user_uid=user_uid
-    )
-
-
 def create_reset_password_token(user_uid):
     """
     Create new reset-password token.
