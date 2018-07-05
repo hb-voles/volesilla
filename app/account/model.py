@@ -39,10 +39,9 @@ class TokenType(Enum):
     """Type of tokens"""
 
     INVITATION = 1
-    REGISTRATION = 2
-    RESET_PASSWORD = 3
-    ACCESS = 4
-    RENEW_ACCESS = 5
+    RESET_PASSWORD = 2
+    ACCESS = 3
+    RENEW_ACCESS = 4
 
 
 class Token(DB.Model):
