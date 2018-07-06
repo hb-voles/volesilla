@@ -2,7 +2,6 @@
 
 import os
 import json
-import requests
 from multiprocessing import Process
 from bs4 import BeautifulSoup
 from hamcrest import assert_that, equal_to
@@ -16,6 +15,7 @@ from database import init_db, check_db_created, add_user, check_user_added, chec
 
 
 def get_csrf(client, url):
+    """Get CSRF from form"""
 
     response = client.get(url)
     soup = BeautifulSoup(response.data, 'html.parser')
@@ -125,22 +125,37 @@ def ask_for_new_invitation(client, user_mail, unregistered_mail, steam_id):
 
     httpretty.enable()  # enable HTTPretty so that it will monkey patch the socket module
 
-    answer = {'response': {'players': [
-        {'steamid': '76561198075520737', 'communityvisibilitystate': 3,
-         'profilestate': 1, 'personaname': 'Mol', 'lastlogoff': 1525382474,
-         'profileurl': 'https://steamcommunity.com/profiles/76561198075520737/',
-         'avatar': 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/99/99f5a6a6a9253ab938037afc922d70272c01d24f.jpg',
-         'avatarmedium': 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/99/99f5a6a6a9253ab938037afc922d70272c01d24f_medium.jpg',
-         'avatarfull': 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/99/99f5a6a6a9253ab938037afc922d70272c01d24f_full.jpg',
-         'personastate': 0, 'realname': 'Petr Čech',
-         'primaryclanid': '103582791437981172', 'timecreated': 1352577764,
-         'personastateflags': 0, 'loccountrycode': 'CZ'}]}
+    answer = {
+        'response':
+            {
+                'players':
+                    [
+                        {
+                            'steamid': '76561198075520737',
+                            'communityvisibilitystate': 3,
+                            'profilestate': 1,
+                            'personaname': 'Mol',
+                            'lastlogoff': 1525382474,
+                            'profileurl': 'https://steamcommunity.com/profiles/76561198075520737/',
+                            'avatar': 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/99/99f5a6a6a9253ab938037afc922d70272c01d24f.jpg',  # pylint: disable=line-too-long
+                            'avatarmedium': 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/99/99f5a6a6a9253ab938037afc922d70272c01d24f_medium.jpg',  # pylint: disable=line-too-long
+                            'avatarfull': 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/99/99f5a6a6a9253ab938037afc922d70272c01d24f_full.jpg',  # pylint: disable=line-too-long
+                            'personastate': 0,
+                            'realname': 'Petr Čech',
+                            'primaryclanid': '103582791437981172',
+                            'timecreated': 1352577764,
+                            'personastateflags': 0,
+                            'loccountrycode': 'CZ'
+                        }
+                    ]
+            }
     }
 
-    httpretty.register_uri(httpretty.GET,
-                           "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/",
-                           body=json.dumps(answer)
-                           )
+    httpretty.register_uri(
+        httpretty.GET,
+        "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/",
+        body=json.dumps(answer)
+    )
 
     response = client.post('/invitation/new', data=dict(
         csrf_token=csrf,
@@ -150,8 +165,12 @@ def ask_for_new_invitation(client, user_mail, unregistered_mail, steam_id):
 
     assert response.status_code == 200
 
-    httpretty.disable()  # disable afterwards, so that you will have no problems in code that uses that socket module
-    httpretty.reset()    # reset HTTPretty state (clean up registered urls and request history)
+    # disable afterwards, so that you will have no problems in code that uses
+    # that socket module
+    httpretty.disable()
+
+    # reset HTTPretty state (clean up registered urls and request history)
+    httpretty.reset()
 
     with MAIL.record_messages() as outbox:
 
@@ -166,11 +185,12 @@ def ask_for_new_invitation(client, user_mail, unregistered_mail, steam_id):
                 created_by=user_mail,
                 player_name='Mol',
                 steam_profile='https://steamcommunity.com/profiles/76561198075520737/',
-                avatar='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/99/99f5a6a6a9253ab938037afc922d70272c01d24f.jpg',
-                avatar_medium='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/99/99f5a6a6a9253ab938037afc922d70272c01d24f_medium.jpg',
-                avatar_full='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/99/99f5a6a6a9253ab938037afc922d70272c01d24f_full.jpg',
+                avatar='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/99/99f5a6a6a9253ab938037afc922d70272c01d24f.jpg', # pylint: disable=line-too-long
+                avatar_medium='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/99/99f5a6a6a9253ab938037afc922d70272c01d24f_medium.jpg', # pylint: disable=line-too-long
+                avatar_full='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/99/99f5a6a6a9253ab938037afc922d70272c01d24f_full.jpg', # pylint: disable=line-too-long
             ),
-            follow_redirects=True)
+            follow_redirects=True
+        )
 
         assert_that(response.status_code, equal_to(200))
 
