@@ -206,11 +206,6 @@ class CheckInvitationForm(FlaskForm):
         'steam id', validators=[
             DataRequired()], render_kw={
                 'readonly': 'readonly'})
-    created_by = HiddenField(
-        'created_by', validators=[
-            DataRequired()], render_kw={
-                'readonly': 'readonly'})
-
     player_name = StringField(
         'player name', validators=[
             DataRequired()], render_kw={
@@ -219,7 +214,10 @@ class CheckInvitationForm(FlaskForm):
         'steam profile', validators=[
             DataRequired()], render_kw={
                 'readonly': 'readonly'})
-    avatar = HiddenField('avatar', validators=[DataRequired()], render_kw={'readonly': 'readonly'})
+    avatar = HiddenField(
+        'avatar', validators=[
+            DataRequired()], render_kw={
+                'readonly': 'readonly'})
     avatar_medium = HiddenField(
         'avatar_medium', validators=[
             DataRequired()], render_kw={
@@ -241,24 +239,16 @@ def invitation_new():
         email = StringField('email', validators=[DataRequired()])
         steam_id = StringField('steam id', validators=[DataRequired()])
 
-        # TODO: This should be user_uid, maybe
-        created_by = HiddenField('created_by',
-                                 render_kw={'readonly': 'readonly'})
-
     with current_app.app_context():
-        user = search_user_by_token_uid(session['access_token'])
-        form = InvitationForm(created_by=user.email)
+        form = InvitationForm()
 
         if form.validate_on_submit():
-            # token = create_invitation_token(user.uid, form.for_user.data)
-
             player_data = get_steam_player(form.steam_id)
 
             check_form = CheckInvitationForm()
 
             check_form.new_user_email.data = form.email.data
             check_form.steam_id.data = form.steam_id.data
-            check_form.created_by.data = form.created_by.data
             check_form.player_name.data = player_data['personaname']
             check_form.steam_profile.data = player_data['profileurl']
             check_form.avatar.data = player_data['avatar']
