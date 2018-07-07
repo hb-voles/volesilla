@@ -169,4 +169,4 @@ def step_impl(context, unregistered_mail, steam_id):
     """Create invitation"""
 
     context.vls['response'], context.vls['outbox'] = ask_for_new_invitation(
-        context.vls['client'], context.vls['user_mail'], unregistered_mail, steam_id)
+        context.vls['client'], unregistered_mail, steam_id)
