@@ -118,7 +118,7 @@ def sign_in_user(client, user_mail, password):
     return response
 
 
-def ask_for_new_invitation(client, user_mail, unregistered_mail, steam_id):
+def ask_for_new_invitation(client, unregistered_mail, steam_id):
     """Ask for password reset"""
 
     csrf = get_csrf(client, '/invitation/new')
@@ -182,7 +182,6 @@ def ask_for_new_invitation(client, user_mail, unregistered_mail, steam_id):
                 csrf_token=csrf,
                 new_user_email=unregistered_mail,
                 steam_id=steam_id,
-                created_by=user_mail,
                 player_name='Mol',
                 steam_profile='https://steamcommunity.com/profiles/76561198075520737/',
                 avatar='https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/99/99f5a6a6a9253ab938037afc922d70272c01d24f.jpg', # pylint: disable=line-too-long

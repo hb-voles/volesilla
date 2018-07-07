@@ -8,7 +8,6 @@ New Invite
 
     <form method="POST" action="{{ url_for('account.invitation_new') }}">
         {{ form.csrf_token }}
-        {{ form.created_by}}
         <p> {{ form.email.label }} <br> {{ form.email(size=20) }}
         <p> {{ form.steam_id.label }} <br> {{ form.steam_id(size=20) }}
         <p> <input type="submit" class="btn btn-primary" value="Create Invitation">
