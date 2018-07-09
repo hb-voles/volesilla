@@ -1,0 +1,19 @@
+{% extends "common/page_base.html" %}
+
+{% block title %}
+New Steam Profile
+{% endblock %}
+
+{% block content %}
+
+    <form method="POST" action="{{ url_for('profile.add_profile') }}">
+        {{ form.csrf_token }}
+        <p> {{ form.steam_id.label }} <br> {{ form.steam_id(size=20) }}
+        <p> <input type="submit" class="btn btn-primary" value="Add">
+    </form>
+
+    <br />
+
+    <div>If you can't find Steam ID, try <a href="https://steamidfinder.com/" target="_blank">steamidfinder</a>.</div>
+
+{% endblock %}

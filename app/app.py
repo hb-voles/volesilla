@@ -10,6 +10,7 @@ from app.exceptions import InvalidUsage
 from app.navbar import build_navbar
 
 from app import account
+from app import profile
 from app import voles
 
 from app.account.controller_token import verify_authentication
@@ -52,6 +53,7 @@ def register_extensions(app):
 def register_blueprints(app):
     """Register Flask blueprints."""
     app.register_blueprint(account.views.BLUEPRINT)
+    app.register_blueprint(profile.views.BLUEPRINT)
     app.register_blueprint(voles.views.BLUEPRINT)
 
 

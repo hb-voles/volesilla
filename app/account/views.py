@@ -16,7 +16,7 @@ from app.account.controller_account import create_account, change_password, conf
 from app.account.controller_auth import authenticate, get_logged_user
 from app.account.controller_token import cancel_token_by_uid, verify_token_by_uid, \
     create_invitation_token, search_user_by_token_uid
-
+from app.profile.views import CheckSteamProfileForm
 
 BLUEPRINT = Blueprint('account', __name__, template_folder='templates')
 
@@ -195,35 +195,11 @@ def invitation_index():
     return render_template('account/invitation_index.html', invitations=invitations)
 
 
-class CheckInvitationForm(FlaskForm):
+class CheckInvitationForm(CheckSteamProfileForm):
     """Check Invitation form"""
 
     new_user_email = HiddenField(
         'email', validators=[
-            DataRequired()], render_kw={
-                'readonly': 'readonly'})
-    steam_id = HiddenField(
-        'steam id', validators=[
-            DataRequired()], render_kw={
-                'readonly': 'readonly'})
-    player_name = StringField(
-        'player name', validators=[
-            DataRequired()], render_kw={
-                'readonly': 'readonly'})
-    steam_profile = HiddenField(
-        'steam profile', validators=[
-            DataRequired()], render_kw={
-                'readonly': 'readonly'})
-    avatar = HiddenField(
-        'avatar', validators=[
-            DataRequired()], render_kw={
-                'readonly': 'readonly'})
-    avatar_medium = HiddenField(
-        'avatar_medium', validators=[
-            DataRequired()], render_kw={
-                'readonly': 'readonly'})
-    avatar_full = HiddenField(
-        'avatar_full', validators=[
             DataRequired()], render_kw={
                 'readonly': 'readonly'})
 

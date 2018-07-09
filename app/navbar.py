@@ -20,6 +20,12 @@ def build_navbar():
             'visibility': 'private',
         },
         {
+            'link': url_for('profile.my_profile'),
+            'label': 'Profile',
+            'position': 'right',
+            'visibility': 'private',
+        },
+        {
             'link': url_for('account.login'),
             'label': 'Sign In',
             'position': 'right',
