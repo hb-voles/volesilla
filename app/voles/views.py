@@ -3,6 +3,8 @@
 
 from flask import Blueprint, render_template
 
+from app.account.model import Player
+
 BLUEPRINT = Blueprint('voles', __name__, template_folder='templates')
 
 
@@ -10,4 +12,6 @@ BLUEPRINT = Blueprint('voles', __name__, template_folder='templates')
 def index():
     """View function"""
 
-    return render_template('voles/voles.html')
+    players = Player.query.order_by(Player.name.desc()).all()
+
+    return render_template('voles/voles.html', players=players)

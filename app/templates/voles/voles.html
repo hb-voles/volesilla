@@ -6,9 +6,28 @@ Hell-Bent VoleS
 
 {% block content %}
 
-    <p class="lead">We are tough players of the game CS:GO. We have a strategy and we are not afraid to use it!</p>
+    <p class="lead"><i>We have a strategy and we are not afraid to use it!</i></p>
+
+    <p>We are tough players of Counter-Strike: Global Offensive. Our team is composed of friendly gamers from Czech Republic and Slovakia.</p>
+
+    <br />
+
+    <h3>Our members</h3>
+
+    <table class="table table-hover">
+
+        {% for player in players %}
+        <tr>
+            <td>
+                <img src="{{ player.avatar_medium }}" alt="avatar">
+            <br />
+                <a href="{{ player.steam_profile }}" target="_blank">{{ player.name }}</a>
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
 
 
-    <p>We are <strong>Hell-Bent VoleS</strong>,  Counter-Strike: Global Offensive team composed of players from Czech Republic and Slovakia.</p>
 
 {% endblock %}

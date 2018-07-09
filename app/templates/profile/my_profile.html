@@ -1,0 +1,33 @@
+{% extends "common/page_base.html" %}
+
+{% block title %}
+My profile
+{% endblock %}
+
+{% block content %}
+
+    <p class="text-right">
+        <a class="btn btn-default btn-sm .text-right" href="{{ url_for('profile.add_profile') }}" role="button">Add profile</a>
+    </p>
+
+
+    <table class="table table-hover">
+
+        <tr>
+            <th>avatar</th>
+            <th>name</th>
+        </tr>
+
+
+        {% for profile in my_profiles %}
+        <tr>
+            <td><img src="{{ profile.avatar }}" alt="avatar"></td>
+            <td><a href="{{ profile.steam_profile }}" target="_blank">{{ profile.name }}</a></td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+{% endblock %}
+
+
