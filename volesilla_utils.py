@@ -20,7 +20,7 @@ from app.app import create_app
 from app.settings import DevConfig, ProdConfig, TestConfig
 from app.extensions import DB, BCRYPT
 
-from app.account.model import User
+from app.database import User
 
 
 def main():

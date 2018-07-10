@@ -7,7 +7,7 @@ from flask import current_app, render_template, url_for
 from flask_mail import Message
 
 from app.extensions import DB, MAIL
-from app.account.model import User, Player
+from app.database import User, Player
 from app.account.controller_token import create_reset_password_token
 
 

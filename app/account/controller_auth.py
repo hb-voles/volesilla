@@ -3,7 +3,7 @@
 from flask import current_app, session
 
 from app.extensions import BCRYPT
-from app.account.model import User
+from app.database import User
 
 from app.account.controller_token import create_access_token, create_renew_access_token, \
     search_user_by_token_uid

@@ -3,7 +3,7 @@
 
 from flask import Blueprint, render_template
 
-from app.account.model import Player
+from app.database import Player
 
 BLUEPRINT = Blueprint('voles', __name__, template_folder='templates')
 
