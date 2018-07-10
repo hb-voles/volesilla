@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from flask import current_app, session
 
 from app.extensions import DB
-from app.account.model import Token, TokenType
+from app.database import Token, TokenType
 
 
 def create_token(token_type, valid_period, user_uid, note=''):

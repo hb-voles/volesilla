@@ -9,7 +9,7 @@ from wtforms import StringField, PasswordField, BooleanField, HiddenField
 from wtforms.validators import DataRequired
 
 from app.auth import login_required
-from app.account.model import Token, TokenType
+from app.database import Token, TokenType
 from app.account.controller import send_invitation_mail, search_user_by_email, \
     send_reset_password_mail, get_steam_player, create_player
 from app.account.controller_account import create_account, change_password, confirm_account

@@ -5,7 +5,7 @@ import uuid
 from flask import current_app
 
 from app.extensions import DB, BCRYPT
-from app.account.model import User, Token, TokenType
+from app.database import User, Token, TokenType
 
 from app.account.controller_token import verify_token_by_uid
 

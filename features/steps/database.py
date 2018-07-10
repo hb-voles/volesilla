@@ -6,7 +6,7 @@ import subprocess
 import sqlite3
 
 from app.utils import iso2datetime
-from app.account.model import TokenType
+from app.database import TokenType
 
 
 def init_db(test_dir):

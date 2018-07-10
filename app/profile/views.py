@@ -8,7 +8,7 @@ from wtforms import StringField, HiddenField
 from wtforms.validators import DataRequired
 
 from app.auth import login_required
-from app.account.model import Player
+from app.database import Player
 from app.account.controller import get_steam_player, create_player
 from app.account.controller_auth import get_logged_user
 
