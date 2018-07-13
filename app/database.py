@@ -6,6 +6,14 @@ import uuid
 from app.extensions import DB, UUID
 
 
+class Internal(DB.Model):
+    """User data model"""
+
+    uid = DB.Column(UUID, primary_key=True, default=uuid.uuid4)
+    db_version = DB.Column(DB.Integer, nullable=False)
+    updated_at = DB.Column(DB.DateTime())
+
+
 class User(DB.Model):
     """User data model"""
 

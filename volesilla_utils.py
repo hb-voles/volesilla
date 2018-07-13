@@ -2,6 +2,7 @@
 """volesilla_utils
 Usage:
   volesilla_utils.py db_init <db_file>
+  volesilla_utils.py check <db_file>
   volesilla_utils.py db_add_user <db_file> <user_mail>
   volesilla_utils.py (-h | --help)
 Options:
@@ -13,6 +14,7 @@ Options:
 import os
 import sys
 import uuid
+from datetime import datetime
 from docopt import docopt
 from flask.helpers import get_debug_flag
 
@@ -20,7 +22,7 @@ from app.app import create_app
 from app.settings import DevConfig, ProdConfig, TestConfig
 from app.extensions import DB, BCRYPT
 
-from app.database import User
+from app.database import Internal, User
 
 
 def main():
@@ -52,7 +54,39 @@ def main():
             DB.init_app(app)
             DB.create_all()
 
+            internal = Internal(
+                db_version=config.DB_VERSION,
+                updated_at=datetime.now()
+            )
+
+            DB.session.add(internal)
+            DB.session.commit()
+
         print('[SUCCESS] File [{}] created.'.format(config.DB_FILE))
+        sys.exit(0)
+
+    if args['check']:
+
+        if not os.path.isfile(config.DB_FILE):
+            print('[WARNING] File [{}] doesn\'t exist.'.format(config.DB_FILE))
+            sys.exit(1)
+
+        app = create_app(config_object=config)
+
+        with app.app_context():
+            DB.init_app(app)
+
+            internal = Internal.query.order_by(Internal.db_version.desc()).first()
+
+            if internal.db_version != config.DB_VERSION:
+                print(
+                    '[WARNING] Schema version [{}] in file [{}] differs from proper [{}].'.format(
+                        internal.db_version, config.DB_FILE, config.DB_VERSION)
+                )
+                sys.exit(0)
+
+        print('[SUCCESS] Schema in [{}] file is in correct version [{}].'.format(
+            config.DB_FILE, config.DB_VERSION))
         sys.exit(0)
 
     if args['db_add_user']:
