@@ -25,7 +25,93 @@ from app.extensions import DB, BCRYPT
 from app.database import Internal, User
 
 
-def main():
+def db_init(config):
+    """Creation of database"""
+
+    if os.path.isfile(config.DB_FILE):
+        print('[WARNING] File [{}] already exists.'.format(config.DB_FILE))
+        sys.exit(0)
+
+    if not os.path.exists(os.path.dirname(config.DB_FILE)):
+        os.makedirs(os.path.dirname(config.DB_FILE))
+
+    app = create_app(config_object=config)
+
+    with app.app_context():
+        DB.init_app(app)
+        DB.create_all()
+
+        internal = Internal(
+            db_version=config.DB_VERSION,
+            updated_at=datetime.now()
+        )
+
+        DB.session.add(internal)
+        DB.session.commit()
+
+    print('[SUCCESS] File [{}] created.'.format(config.DB_FILE))
+    sys.exit(0)
+
+
+def db_check(config):
+    """Check of database"""
+
+    if not os.path.isfile(config.DB_FILE):
+        print('[WARNING] File [{}] doesn\'t exist.'.format(config.DB_FILE))
+        sys.exit(1)
+
+    app = create_app(config_object=config)
+
+    with app.app_context():
+        DB.init_app(app)
+
+        internal = Internal.query.order_by(Internal.db_version.desc()).first()
+
+        if internal.db_version != config.DB_VERSION:
+            print(
+                '[WARNING] Schema version [{}] in file [{}] differs from proper [{}].'.format(
+                    internal.db_version, config.DB_FILE, config.DB_VERSION)
+            )
+            sys.exit(0)
+
+    print('[SUCCESS] Schema in [{}] file is in correct version [{}].'.format(
+        config.DB_FILE, config.DB_VERSION))
+    sys.exit(0)
+
+
+def db_add_user(config, user_email):
+    """Adding user"""
+
+    if not os.path.isfile(config.DB_FILE):
+        print('[WARNING] File [{}] doesn\'t exist.'.format(config.DB_FILE))
+        sys.exit(1)
+
+    app = create_app(config_object=config)
+
+    with app.app_context():
+        DB.init_app(app)
+
+        user = User.query.filter_by(email=user_email).first()
+        if user:
+            print('[WARNING] User [{}] is already added. '.format(user_email))
+            sys.exit(0)
+
+        admin = User(
+            email=user_email,
+            password=BCRYPT.generate_password_hash(uuid.uuid4().hex),
+            gdpr_version=config.GDPR_VERSION,
+            is_active=True
+        )
+
+        DB.session.add(admin)
+        DB.session.commit()
+
+    print(
+        '[SUCCESS] Admin user was set. For activation, you should reset password.')
+    sys.exit(0)
+
+
+def main():  # pylint: disable=too-many-statements
     """Entry point"""
 
     args = docopt(__doc__)
@@ -40,79 +126,13 @@ def main():
     config.SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(config.DB_FILE)
 
     if args['db_init']:
-
-        if os.path.isfile(config.DB_FILE):
-            print('[WARNING] File [{}] already exists.'.format(config.DB_FILE))
-            sys.exit(0)
-
-        if not os.path.exists(os.path.dirname(config.DB_FILE)):
-            os.makedirs(os.path.dirname(config.DB_FILE))
-
-        app = create_app(config_object=config)
-
-        with app.app_context():
-            DB.init_app(app)
-            DB.create_all()
-
-            internal = Internal(
-                db_version=config.DB_VERSION,
-                updated_at=datetime.now()
-            )
-
-            DB.session.add(internal)
-            DB.session.commit()
-
-        print('[SUCCESS] File [{}] created.'.format(config.DB_FILE))
-        sys.exit(0)
+        db_init(config)
 
     if args['check']:
-
-        if not os.path.isfile(config.DB_FILE):
-            print('[WARNING] File [{}] doesn\'t exist.'.format(config.DB_FILE))
-            sys.exit(1)
-
-        app = create_app(config_object=config)
-
-        with app.app_context():
-            DB.init_app(app)
-
-            internal = Internal.query.order_by(Internal.db_version.desc()).first()
-
-            if internal.db_version != config.DB_VERSION:
-                print(
-                    '[WARNING] Schema version [{}] in file [{}] differs from proper [{}].'.format(
-                        internal.db_version, config.DB_FILE, config.DB_VERSION)
-                )
-                sys.exit(0)
-
-        print('[SUCCESS] Schema in [{}] file is in correct version [{}].'.format(
-            config.DB_FILE, config.DB_VERSION))
-        sys.exit(0)
+        db_check(config)
 
     if args['db_add_user']:
-
-        if not os.path.isfile(config.DB_FILE):
-            print('[WARNING] File [{}] doesn\'t exist.'.format(config.DB_FILE))
-            sys.exit(1)
-
-        app = create_app(config_object=config)
-
-        with app.app_context():
-            DB.init_app(app)
-
-            admin = User(
-                email=args['<user_mail>'],
-                password=BCRYPT.generate_password_hash(uuid.uuid4().hex),
-                gdpr_version=config.GDPR_VERSION,
-                is_active=True
-            )
-
-            DB.session.add(admin)
-            DB.session.commit()
-
-        print(
-            '[SUCCESS] Admin user was set. For activation, you should reset password.')
-        sys.exit(0)
+        db_add_user(config, args['<user_mail>'])
 
 
 if __name__ == '__main__':
