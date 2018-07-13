@@ -28,7 +28,6 @@ def authenticate(email, password):
             return False
 
         user_uid = user.uid
-        session['user_email'] = user.email
 
         access_token = create_access_token(user_uid)
         session['access_token'] = access_token.uid.hex

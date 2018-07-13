@@ -133,15 +133,6 @@ def step_impl(context, user_mail, password):
     context.vls['response'] = sign_in_user(context.vls['client'], user_mail, password)
 
 
-@then(u'cookie contains key "{key}" with value "{value}"')
-def step_impl(context, key, value):
-    "Check key, value in cookie"
-
-    with context.vls['session'].session_transaction() as sess:
-        assert key in sess
-        assert_that(sess[key], equal_to(value))
-
-
 @then(u'"{token_type}" for user "{user_mail}" is valid (cookie)')
 def step_impl(context, token_type, user_mail):
     """Check token cookie"""

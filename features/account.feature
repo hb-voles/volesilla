@@ -32,7 +32,6 @@ Feature: Account
     and we reset password to "Password123" for user "admin@test.vls"
     When user "admin@test.vls" sign in with password "Password123"
     Then return status is "200"
-    And cookie contains key "user_email" with value "admin@test.vls"
     And "access_token" for user "admin@test.vls" is valid (cookie)
     And "renew_access_token" for user "admin@test.vls" is valid (cookie)
 
