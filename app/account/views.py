@@ -8,12 +8,12 @@ from flask_wtf import FlaskForm, RecaptchaField
 from wtforms import StringField, PasswordField, BooleanField, HiddenField
 from wtforms.validators import DataRequired
 
-from app.auth import login_required
+from app.authen import login_required
 from app.database import Token, TokenType
 from app.account.controller import send_invitation_mail, search_user_by_email, \
     send_reset_password_mail, get_steam_player, create_player
 from app.account.controller_account import create_account, change_password, confirm_account
-from app.account.controller_auth import authenticate, get_logged_user
+from app.account.controller_authen import authenticate, get_logged_user
 from app.account.controller_token import cancel_token_by_uid, verify_token_by_uid, \
     create_invitation_token, search_user_by_token_uid
 from app.profile.views import CheckSteamProfileForm

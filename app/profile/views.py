@@ -7,10 +7,10 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, HiddenField
 from wtforms.validators import DataRequired
 
-from app.auth import login_required
+from app.authen import login_required
 from app.database import Player
 from app.account.controller import get_steam_player, create_player
-from app.account.controller_auth import get_logged_user
+from app.account.controller_authen import get_logged_user
 
 
 BLUEPRINT = Blueprint('profile', __name__, template_folder='templates')
