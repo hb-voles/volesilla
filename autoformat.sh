@@ -8,21 +8,6 @@ SOURCE_PATH=`readlink -f ${RELATIVE_SOURCE_PATH}`
 sed --in-place 's/[[:space:]]\+$//' `find ${SOURCE_PATH} -type f -name '*.md'`
 sed --in-place 's/[[:space:]]\+$//' `find ${SOURCE_PATH} -type f -name '*.feature'`
 
-# Reformat all markdown files to markdown_github
-for filename in `find ${SOURCE_PATH} -type f -name '*.md'`; do
-
-    pandoc \
-        -s \
-        --smart \
-        -f markdown_github \
-        -t markdown_github \
-        -o ${filename}.tmp \
-        ${filename}
-
-    mv -f ${filename}.tmp ${filename}
-
-done
-
 autopep8 --max-line-length=100 -i -aaa -r ${SOURCE_PATH}/app/
 autopep8 --max-line-length=100 -i -aaa -r ${SOURCE_PATH}/features/
 
