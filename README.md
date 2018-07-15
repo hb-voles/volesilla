@@ -18,6 +18,7 @@ Development
 
     python volesilla_utils.py db_init ${VLS_DB_FILE}
     python volesilla_utils.py db_add_user ${VLS_DB_FILE} ${VLS_APP_ADMIN_MAIL}
+    python volesilla_utils.py create_rights ${VLS_DB_FILE}
 
     flask run
 

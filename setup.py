@@ -16,6 +16,7 @@ setup(
         'docopt',
         'python-dateutil',
         'requests',
+        'pyyaml',
         'beautifulsoup4',
         'uWSGI==2.0.17',
         'Flask==0.12',
