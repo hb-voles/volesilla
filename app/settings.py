@@ -3,7 +3,7 @@
 import os
 
 
-class Config(object):
+class Config():
     """Base configuration."""
 
     DB_VERSION = 5
