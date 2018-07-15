@@ -1,0 +1,17 @@
+version: 1
+roles:
+  - associate
+  - recruit
+  - team member
+  - superintendent
+rights:
+  invitation:
+    - permission: show
+      description: show list of invitations
+      roles:
+        - team member
+        - superintendent
+    - permission: create
+      description: create invitations
+      roles:
+        - superintendent
