@@ -28,38 +28,6 @@ from app.author import get_rights_name
 from app.database import Internal, Rights, User
 
 
-def create_access_rights(config):
-    """Create access rights"""
-    with open('rights.yaml', 'r') as stream:
-        roles_rights = yaml.load(stream)
-
-    if not os.path.isfile(config.DB_FILE):
-        print('[WARNING] File [{}] doesn\'t exist.'.format(config.DB_FILE))
-        sys.exit(1)
-
-    app = create_app(config_object=config)
-
-    with app.app_context():
-        DB.init_app(app)
-
-        for group in roles_rights['rights']:
-            for rule in roles_rights['rights'][group]:
-
-                rights = Rights(
-                    name=get_rights_name(group, rule['permission']),
-                    group=group,
-                    permission=rule['permission'],
-                    description=rule['description']
-                )
-
-                DB.session.add(rights)
-
-        DB.session.commit()
-
-    print('[SUCCESS] Rights imported to [{}] file'.format(
-        config.DB_FILE))
-
-
 def db_init(config):
     """Creation of database"""
 
@@ -141,6 +109,38 @@ def db_add_user(config, user_email):
 
     print(
         '[SUCCESS] Admin user was set. For activation, you should reset password.')
+
+
+def create_access_rights(config):
+    """Create access rights"""
+    with open('rights.yaml', 'r') as stream:
+        roles_rights = yaml.load(stream)
+
+    if not os.path.isfile(config.DB_FILE):
+        print('[WARNING] File [{}] doesn\'t exist.'.format(config.DB_FILE))
+        sys.exit(1)
+
+    app = create_app(config_object=config)
+
+    with app.app_context():
+        DB.init_app(app)
+
+        for group in roles_rights['rights']:
+            for rule in roles_rights['rights'][group]:
+
+                rights = Rights(
+                    name=get_rights_name(group, rule['permission']),
+                    group=group,
+                    permission=rule['permission'],
+                    description=rule['description']
+                )
+
+                DB.session.add(rights)
+
+        DB.session.commit()
+
+    print('[SUCCESS] Rights imported to [{}] file'.format(
+        config.DB_FILE))
 
 
 def main():  # pylint: disable=too-many-statements
