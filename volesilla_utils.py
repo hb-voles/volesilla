@@ -4,12 +4,13 @@ Usage:
   volesilla_utils.py db_init <db_file>
   volesilla_utils.py check <db_file>
   volesilla_utils.py db_add_user <db_file> <user_mail>
-  volesilla_utils.py create_rights <db_file>
+  volesilla_utils.py rights_import <db_file> <rights_file>
   volesilla_utils.py (-h | --help)
 Options:
   -t                Testing environment
   -h --help         Show this screen.
   db_file           Absolute path to the DB file
+  rights_file       .yaml file with rights and roles definitions
 """
 
 import os
@@ -111,9 +112,15 @@ def db_add_user(config, user_email):
         '[SUCCESS] Admin user was set. For activation, you should reset password.')
 
 
-def create_access_rights(config):
-    """Create access rights"""
-    with open('rights.yaml', 'r') as stream:
+def import_rights(config, rights_file):
+    """Import rights to database
+
+    :param config: Configuration object
+    :param rights_file: File with rights and roles definitions
+    :return:
+    """
+
+    with open(rights_file, 'r') as stream:
         roles_rights = yaml.load(stream)
 
     if not os.path.isfile(config.DB_FILE):
@@ -169,8 +176,8 @@ def main():  # pylint: disable=too-many-statements
         db_add_user(config, args['<user_mail>'])
         sys.exit(0)
 
-    if args['create_rights']:
-        create_access_rights(config)
+    if args['rights_import'] and args['<rights_file>']:
+        import_rights(config, args['<rights_file>'])
         sys.exit(0)
 
 
