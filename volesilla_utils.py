@@ -58,7 +58,6 @@ def create_access_rights(config):
 
     print('[SUCCESS] Rights imported to [{}] file'.format(
         config.DB_FILE))
-    sys.exit(0)
 
 
 def db_init(config):
@@ -86,7 +85,6 @@ def db_init(config):
         DB.session.commit()
 
     print('[SUCCESS] File [{}] created.'.format(config.DB_FILE))
-    sys.exit(0)
 
 
 def db_check(config):
@@ -112,7 +110,6 @@ def db_check(config):
 
     print('[SUCCESS] Schema in [{}] file is in correct version [{}].'.format(
         config.DB_FILE, config.DB_VERSION))
-    sys.exit(0)
 
 
 def db_add_user(config, user_email):
@@ -144,7 +141,6 @@ def db_add_user(config, user_email):
 
     print(
         '[SUCCESS] Admin user was set. For activation, you should reset password.')
-    sys.exit(0)
 
 
 def main():  # pylint: disable=too-many-statements
@@ -163,15 +159,19 @@ def main():  # pylint: disable=too-many-statements
 
     if args['db_init']:
         db_init(config)
+        sys.exit(0)
 
     if args['check']:
         db_check(config)
+        sys.exit(0)
 
     if args['db_add_user']:
         db_add_user(config, args['<user_mail>'])
+        sys.exit(0)
 
     if args['create_rights']:
         create_access_rights(config)
+        sys.exit(0)
 
 
 if __name__ == '__main__':
