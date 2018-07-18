@@ -24,9 +24,9 @@ from flask.helpers import get_debug_flag
 from app.app import create_app
 from app.settings import DevConfig, ProdConfig, TestConfig
 from app.extensions import DB, BCRYPT
-from app.author import get_rights_name
+from app.author import get_rights_name, get_role_name
 
-from app.database import Internal, Rights, User
+from app.database import Internal, Rights, Role, RoleRights, User
 
 
 def db_init(config):
@@ -132,17 +132,34 @@ def import_rights(config, rights_file):
     with app.app_context():
         DB.init_app(app)
 
+        rr_scheme = {'rights': [], 'roles': [], 'role_rights': []}
+
+        for role in roles_rights['roles']:
+            rr_scheme['roles'].append(Role(name=get_role_name(role)))
+
         for group in roles_rights['rights']:
             for rule in roles_rights['rights'][group]:
-
-                rights = Rights(
+                rr_scheme['rights'].append(Rights(
                     name=get_rights_name(group, rule['permission']),
                     group=group,
                     permission=rule['permission'],
                     description=rule['description']
-                )
+                ))
 
-                DB.session.add(rights)
+                for role in rule['roles']:
+                    rr_scheme['role_rights'].append(RoleRights(
+                        role=get_role_name(role),
+                        rights=get_rights_name(group, rule['permission'])
+                    ))
+
+        for rights in rr_scheme['rights']:
+            DB.session.add(rights)
+
+        for roles in rr_scheme['roles']:
+            DB.session.add(roles)
+
+        for role_rights in rr_scheme['role_rights']:
+            DB.session.add(role_rights)
 
         DB.session.commit()
 

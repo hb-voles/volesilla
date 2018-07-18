@@ -17,26 +17,24 @@ class Internal(DB.Model):
 class Rights(DB.Model):
     """Access rights"""
 
-    uid = DB.Column(UUID, primary_key=True, default=uuid.uuid4)
-    name = DB.Column(DB.String(50), nullable=False, unique=True)
+    name = DB.Column(DB.String(50), primary_key=True)
     group = DB.Column(DB.String(50), nullable=False)
     permission = DB.Column(DB.String(50), nullable=False)
     description = DB.Column(DB.String(255), nullable=False)
 
 
-class UserRole(DB.Model):
+class Role(DB.Model):
     """User Roles"""
 
-    uid = DB.Column(UUID, primary_key=True, default=uuid.uuid4)
-    name = DB.Column(DB.String(50), nullable=False, unique=True)
+    name = DB.Column(DB.String(50), primary_key=True)
 
 
-class RoleRight(DB.Model):
+class RoleRights(DB.Model):
     """Connection roles <--> rights"""
 
     uid = DB.Column(UUID, primary_key=True, default=uuid.uuid4)
-    role_uid = DB.Column(UUID, nullable=False, unique=True)
-    right_uid = DB.Column(UUID, nullable=False, unique=True)
+    role = DB.Column(DB.String(50), nullable=False)
+    rights = DB.Column(DB.String(50), nullable=False)
 
 
 class User(DB.Model):
