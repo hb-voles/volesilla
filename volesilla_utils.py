@@ -150,7 +150,7 @@ def import_rights(config, rights_file):
         config.DB_FILE))
 
 
-def main():  # pylint: disable=too-many-statements
+def main():
     """Entry point"""
 
     args = docopt(__doc__)
