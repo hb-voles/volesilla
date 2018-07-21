@@ -11,6 +11,7 @@ class Internal(DB.Model):
 
     uid = DB.Column(UUID, primary_key=True, default=uuid.uuid4)
     db_version = DB.Column(DB.Integer, nullable=False)
+    rights_version = DB.Column(DB.Integer, nullable=False)
     updated_at = DB.Column(DB.DateTime())
 
 

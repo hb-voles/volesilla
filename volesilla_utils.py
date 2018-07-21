@@ -47,6 +47,7 @@ def db_init(config):
 
         internal = Internal(
             db_version=config.DB_VERSION,
+            rights_version=0,
             updated_at=datetime.now()
         )
 
@@ -160,6 +161,14 @@ def import_rights(config, rights_file):
 
         for role_rights in rr_scheme['role_rights']:
             DB.session.add(role_rights)
+
+        internal = Internal(
+            db_version=config.DB_VERSION,
+            rights_version=roles_rights['version'],
+            updated_at=datetime.now()
+        )
+
+        DB.session.add(internal)
 
         DB.session.commit()
 
