@@ -1,4 +1,4 @@
-"""Data model for user"""
+"""Data models"""
 
 from enum import Enum, unique
 import uuid
