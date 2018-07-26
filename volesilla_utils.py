@@ -2,9 +2,9 @@
 """volesilla_utils
 Usage:
   volesilla_utils.py db_init <db_file>
-  volesilla_utils.py check <db_file>
-  volesilla_utils.py db_add_user <db_file> <user_mail>
   volesilla_utils.py rights_import <db_file> <rights_file>
+  volesilla_utils.py db_add_user <db_file> <user_mail>
+  volesilla_utils.py check <db_file> <rights_file>
   volesilla_utils.py (-h | --help)
 Options:
   -t                Testing environment
@@ -176,6 +176,32 @@ def import_rights(config, rights_file):
         config.DB_FILE))
 
 
+def rights_check(config, rights_file):
+    """Check of rights version"""
+
+    if not os.path.isfile(rights_file):
+        print('[Warning] File [{}] doesn\'t exist.' .format(rights_file))
+        sys.exit(1)
+
+    with open(rights_file, 'r') as stream:
+        roles_rights = yaml.load(stream)
+
+    app = create_app(config_object=config)
+
+    with app.app_context():
+        DB.init_app(app)
+
+        internal = Internal.query.order_by(Internal.rights_version.desc()).first()
+
+        if internal.rights_version != roles_rights['version']:
+            print('[WARNING] Rights version [{}] in file [{}] differs from proper [{}].'.format(
+                roles_rights['version'], rights_file, internal.rights_version))
+            sys.exit(0)
+
+    print('[SUCCESS] Rights in [{}] file is in correct version [{}].' .format(
+        rights_file, internal.rights_version))
+
+
 def main():
     """Entry point"""
 
@@ -196,6 +222,7 @@ def main():
 
     if args['check']:
         db_check(config)
+        rights_check(config, args['<rights_file>'])
         sys.exit(0)
 
     if args['db_add_user']:
