@@ -121,12 +121,12 @@ def import_rights(config, rights_file):
     :return:
     """
 
-    with open(rights_file, 'r') as stream:
-        roles_rights = yaml.load(stream)
-
     if not os.path.isfile(config.DB_FILE):
         print('[WARNING] File [{}] doesn\'t exist.'.format(config.DB_FILE))
         sys.exit(1)
+
+    with open(rights_file, 'r') as stream:
+        roles_rights = yaml.load(stream)
 
     app = create_app(config_object=config)
 
