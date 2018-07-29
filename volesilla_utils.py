@@ -138,6 +138,8 @@ def import_rights(config, rights_file):
         for role in roles_rights['roles']:
             rr_scheme['roles'].append(Role(name=get_role_name(role)))
 
+        rr_scheme['roles'].append(Role(name=get_role_name('admin')))
+
         for group in roles_rights['rights']:
             for rule in roles_rights['rights'][group]:
                 rr_scheme['rights'].append(Rights(
@@ -153,6 +155,11 @@ def import_rights(config, rights_file):
                         rights=get_rights_name(group, rule['permission'])
                     ))
 
+                rr_scheme['role_rights'].append(RoleRights(
+                    role=get_role_name('admin'),
+                    rights=get_rights_name(group, rule['permission'])
+                ))
+
         for rights in rr_scheme['rights']:
             DB.session.add(rights)
 
@@ -167,7 +174,6 @@ def import_rights(config, rights_file):
             rights_version=roles_rights['version'],
             updated_at=datetime.now()
         )
-
         DB.session.add(internal)
 
         DB.session.commit()
